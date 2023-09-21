@@ -1,0 +1,671 @@
+MNEMONIC NAME,FIELD SIZE,DATA ELEMENT DESCRIPTION,BUSINESS RULES AND EDITS,CLARIFICATION / EXPLANATION OF MNEMONIC,FIELD,ANALYSIS
+PASTYPE.,CHAR 7,DIGITAL DATA - OIL ANALYSIS ,pas-oan,"Oil Analysis test, format",~ VERSION,OAN
+UNIT.,CHAR 1,UNITS FLAG,(m)etric,Metric Units for AER submission,~ VERSION,OAN
+VERS.,"NUMB 5,2",AER DIGITAL WELL TEST DATA,4,Current AER version for ASCII test data submission,~ VERSION,OAN
+UWI.,CHAR 20 ,UNIQUE WELL ID,uwi must be valid and exist on aer database.,Unique Well Identifier - Bottomhole location.,~ WELL INFORMATION,OAN
+DRILLEG.,NUMB 2 ,DRILLING LEG,"must be 01, 02, 03…09 (cannot be 0 or null)","Drilling Leg (Event or Occurrence). Together with the UWI, this is to help define the bottom of the specific drill hole.",~ WELL INFORMATION,OAN
+WLIC.,CHAR 9,AER WELL LICENSE NUMBER,well license number must match aer license number for uwi ,AER Well License Number,~ WELL INFORMATION,OAN
+FORM.,CHAR 20 ,FORMATION NAME,,Name of the geological formation/zone,~ WELL INFORMATION,OAN
+WSFL.,NUMB 2,WELL FLUID TYPE AT TEST DATE,"mandatory, must have a valid aer fluid code =  (01) oil, (02) gas, (06) water, or (17) crude bitumen","Type of Dominant Fluid Production/Pay (i.e. oil, gas, water)",~ WELL INFORMATION,OAN
+LABCO.,CHAR 60,LABORATORY NAME,,Company name conducting analysis,~ TEST DATA,OAN
+LFNUM.,CHAR 25,LABORATORY FILE NUMBER,,Identification number,~ TEST DATA,OAN
+TTOPL.M,"NUMB 6,2",TEST/PROD. INTERVAL TOP M KB (LOG),[ttopl] (interval top - log) must be > 0.0 and < [tbasl] (interval base - log),"Top of tested or producing interval - in log depth, measured mKB",~ TEST DATA,OAN
+TBASL.M,"NUMB 6,2",TEST/PROD. INTERVAL BASE M KB (LOG),[tbasl] (interval base - log) must be > 0.0 and => [ttopl] (interval top - log)  and cannot be greater than total well depth.,"Base of tested or producing interval - in log depth, measured mKB",~ TEST DATA,OAN
+SDAT.DAY,YYYY MM DD,DATE SAMPLED,must be >= spud date and <= abandoned date and <= submission date,Date sample gathered,~ TEST DATA,OAN
+IDENT.,CHAR 12,CONTAINER IDENTITY,,Identification code of container,~ TEST DATA,OAN
+SPNT.,NUMB 2,SAMPLE POINT CODE,"mandatory, must be valid aer sample point code (see footnote).",Sample gathering point,~ TEST DATA,OAN
+SPNTN.,CHAR 100,SAMPLE POINT NAME,,Laboratories Unique Text Description of Sample Gathering Point,~ TEST DATA,OAN
+ADAT.DAY,YYYY MM DD,DATE ANALYZED,must be >= [sdat] (sample date) and <= submission date,Date Sample Analysis,~ TEST DATA,OAN
+SPRES.KPAA,"NUMB 8,2",SAMPLE PRESSURE,"optional, can not be zero",Pressure as Sampled (in field) - kPaa,~ TEST DATA,OAN
+STEMP.DEGC,"NUMB 5,2",SAMPLE TEMPERATURE,"optional, can be zero",Temperature as Sampled (in field) - DegC,~ TEST DATA,OAN
+RPRES.KPAA,"NUMB 8,2",RECEIVED PRESSURE,"optional, can not be zero",Pressure as Received (in Lab) -kPaa,~ TEST DATA,OAN
+RTEMP.DEGC,"NUMB 5,2",RECEIVED TEMPERATURE,"optional, can be zero",Temperature as Received (in Lab) - DegC,~ TEST DATA,OAN
+DSTLOC.,CHAR 1,DST SAMPLE LOCATION,"if [spnt] (sample point code) = (50) then [dstloc] (dst sample location) must be (t)op, (m)iddle, or (b)ottom. else must be null.",,~ TEST DATA,OAN
+OANC.,CHAR 240,COMMENT ON SAMPLE,optional,General Free form Comment (regarding Sample or Analytical Procedures).,~ TEST DATA,OAN
+CNAM.,CHAR 40,COLOUR OF CLEAN OIL,optional,"Colour of clean oil, by name",~ OIL SAMPLE PROPERTIES,OAN
+CNUM.,CHAR 20,COLOUR NUMBER,optional,"Colour number, by ASTM D-1500",~ OIL SAMPLE PROPERTIES,OAN
+BSWW.FRAC,"NUMB 4,3",FRACTION OF WATER,"optional, can be null or zero","Basic sand and water volume fraction, of water",~ OIL SAMPLE PROPERTIES,OAN
+BSWS.FRAC,"NUMB 4,3",FRACTION OF SEDIMENT,"optional, can be null or zero","Basic sand and water volume fraction, of sediment",~ OIL SAMPLE PROPERTIES,OAN
+BSW.FRAC,"NUMB 4,3",FRACTION OF TOTAL BS&W,"optional, can be null or zero","Basic sand and water volume fraction, total",~ OIL SAMPLE PROPERTIES,OAN
+RDNRX.,"NUMB 4,3",RELATIVE DENSITY AS RECEIVED,"optional, can be null or zero",Relative density as received,~ OIL SAMPLE PROPERTIES,OAN
+RDNCL.,"NUMB 4,3",RELATIVE DENSITY AFTER CLEANING,"optional, can be null or zero",Relative density after cleaning,~ OIL SAMPLE PROPERTIES,OAN
+ADNRX.KG/M3,"NUMB 6,1",ABSOLUTE DENSITY AS RECEIVED,"optional, can be null or zero","Absolute density as received, kg/m3",~ OIL SAMPLE PROPERTIES,OAN
+ADNCL.KG/M3,"NUMB 6,1",ABSOLUTE DENSITY AFTER CLEANING,"mandatory, can not be zero","Absolute density after cleaning, kg/m3",~ OIL SAMPLE PROPERTIES,OAN
+API.,"NUMB 6,2",API GRAVITY @ 15 DEGC,"optional, can be null or zero",API gravity @ 15 (Degrees Celsius),~ OIL SAMPLE PROPERTIES,OAN
+TSUL.FRAC,"NUMB 7,5",TOTAL SULPHUR MASS FRACTION,if [tsul.gm/kg] (total sulphur) is null then [tsul.frac] (total sulphur mass fraction) is mandatory (either must be present). can be zero.,Mass fraction of total sulphur,~ OIL SAMPLE PROPERTIES,OAN
+TSUL.GM/KG,"NUMB 7,2",TOTAL SULPHUR,if tsul.frac is null then [tsul.frac] (total sulphur mass fraction) is mandatory (either must be present). can be zero,"Ratio of total sulphur, gm/kg",~ OIL SAMPLE PROPERTIES,OAN
+TSALT.KG/M3,"NUMB 7,5",TOTAL SALT,"optional, can be null or zero",Salt kg/m3,~ OIL SAMPLE PROPERTIES,OAN
+RVP.KPAA,"NUMB 8,2",REID VAPOUR PRESSURE,"optional, can be null or zero","Reid Vapour Pressure, kPaa",~ OIL SAMPLE PROPERTIES,OAN
+CONRD.FRAC,"NUMB 8,2",CARBON RISIDUE CONRADSON FRACTION,"optional, can be null or zero","Carbon Risidue, mass fraction - Conradson",~ OIL SAMPLE PROPERTIES,OAN
+RAMBT.FRAC,"NUMB 8,2",CARBON RISIDUE RAMSBOTTOM FRACTION,"optional, can be null or zero","Carbon Risidue, mass fraction - Ramsbottom",~ OIL SAMPLE PROPERTIES,OAN
+PPTUSBM.DEGC,"NUMB 5,2",POUR POINT U.S.B.M. STANDARD DEGC,"optional, can be null, negative or zero",Pour Point U.S.B.M. standard - (Degrees Celsius),~ OIL SAMPLE PROPERTIES,OAN
+PPTASTM.DEGC,"NUMB 5,2",POUR POINT A.S.T.M. STANDARD DEGC,"optional, can be null, negative or zero",Pour Point A.S.T.M. standard - (Degrees Celsius),~ OIL SAMPLE PROPERTIES,OAN
+UT1.DEGC,NUMB 2,VISCOSITY TEMPERATURE POINT 1,must be > 0,"Viscosity temperature point 1, (Degrees Celsius)",~ OIL VISCOSITY,OAN
+UAB1.MPA'S,"NUMB 11,3",ABSOLUTE/DYNAMIC VISCOSITY AT POINT 1,must be > 0.00,"Absolute/Dynamic viscosity at point 1, mPa's",~ OIL VISCOSITY,OAN
+UKIN1.MM2/S,"NUMB 11,3",KINEMATIC VISCOSITY AT POINT 1,must be > 0.00,"Kinematic viscosity at point 1, mm2/s",~ OIL VISCOSITY,OAN
+UT2.DEGC,NUMB 2,VISCOSITY TEMPERATURE POINT 2,"optional. if present, must be > 0. must be reported if established","Viscosity temperature point 2, (Degrees Celsius)",~ OIL VISCOSITY,OAN
+UAB2.MPA'S,"NUMB 11,3",ABSOLUTE/DYNAMIC VISCOSITY AT POINT 2,"optional. if present, must be > 0.00. must be reported if established","Absolute/Dynamic viscosity at point 2, mPa's",~ OIL VISCOSITY,OAN
+UKIN2.MM2/S,"NUMB 11,3",KINEMATIC VISCOSITY AT POINT 2,"optional. if present, must be > 0.00. must be reported if established","Kinematic viscosity at point 2, mm2/s",~ OIL VISCOSITY,OAN
+UT3.DEGC,NUMB 2,VISCOSITY TEMPERATURE POINT 3,"optional. if present, must be > 0. must be reported if established","Viscosity temperature point 3, (Degrees Celsius)",~ OIL VISCOSITY,OAN
+UAB3.MPA'S,"NUMB 11,3",ABSOLUTE/DYNAMIC VISCOSITY AT POINT 3,"optional. if present, must be > 0.00. must be reported if established","Absolute/Dynamic viscosity at point 3, mPa's",~ OIL VISCOSITY,OAN
+UKIN3.MM2/S,"NUMB 11,3",KINEMATIC VISCOSITY AT POINT 3,"optional. if present, must be > 0.00. must be reported if established","Kinematic viscosity at point 3, mm2/s",~ OIL VISCOSITY,OAN
+UT4.DEGC,NUMB 2,VISCOSITY TEMPERATURE POINT 4,"optional. if present, must be > 0. must be reported if established","Viscosity temperature point 4, (Degrees Celsius)",~ OIL VISCOSITY,OAN
+UAB4.MPA'S,"NUMB 11,3",ABSOLUTE/DYNAMIC VISCOSITY AT POINT 4,"optional. if present, must be > 0.00. must be reported if established","Absolute/Dynamic viscosity at point 4, mPa's",~ OIL VISCOSITY,OAN
+UKIN4.MM2/S,"NUMB 11,3",KINEMATIC VISCOSITY AT POINT 4,"optional. if present, must be > 0.00. must be reported if established","Kinematic viscosity at point 4, mm2/s",~ OIL VISCOSITY,OAN
+UT5.DEGC,NUMB 2,VISCOSITY TEMPERATURE POINT 5,"optional. if present, must be > 0. must be reported if established","Viscosity temperature point 5, (Degrees Celsius)",~ OIL VISCOSITY,OAN
+UAB5.MPA'S,"NUMB 11,3",ABSOLUTE/DYNAMIC VISCOSITY AT POINT 5,"optional. if present, must be > 0.00. must be reported if established","Absolute/Dynamic viscosity at point 5, mPa's",~ OIL VISCOSITY,OAN
+UKIN5.MM2/S,"NUMB 11,3",KINEMATIC VISCOSITY AT POINT 5,"optional. if present, must be > 0.00. must be reported if established","Kinematic viscosity at point 5, mm2/s",~ OIL VISCOSITY,OAN
+UT6.DEGC,NUMB 2,VISCOSITY TEMPERATURE POINT 6,"optional. if present, must be > 0. must be reported if established","Viscosity temperature at point 6, (Degrees Celsius)",~ OIL VISCOSITY,OAN
+UAB6.MPA'S,"NUMB 11,3",ABSOLUTE/DYNAMIC VISCOSITY AT POINT 6,"optional. if present, must be > 0.00. must be reported if established","Absolute/Dynamic viscosity at point 6, mPa's",~ OIL VISCOSITY,OAN
+UKIN6.MM2/S,"NUMB 11,3",KINEMATIC VISCOSITY AT POINT 6,"optional. if present, must be > 0.00. must be reported if established","Kinematic viscosity at point 6, mm2/s",~ OIL VISCOSITY,OAN
+IBP.DEGC,"NUMB 5,2",INITIAL BOILING POINT TEMPERATURE,"optional, must be reported if established","Initial boiling point temperature, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL1.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 1,"optional, must be reported if established",Distillation volume fraction 1,~ OIL DISTILLATION,OAN
+DTP1.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 1,"optional, must be reported if established","Distillation volume temperature 1, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL2.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 2,"optional, must be reported if established",Distillation volume fraction 2,~ OIL DISTILLATION,OAN
+DTP2.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 2,"optional, must be reported if established","Distillation volume temperature 2, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL3.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 3,"optional, must be reported if established",Distillation volume fraction 3,~ OIL DISTILLATION,OAN
+DTP3.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 3,"optional, must be reported if established","Distillation volume temperature 3, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL4.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 4,"optional, must be reported if established",Distillation volume fraction 4,~ OIL DISTILLATION,OAN
+DTP4.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 4,"optional, must be reported if established","Distillation volume temperature 4, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL5.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 5,"optional, must be reported if established",Distillation volume fraction 5,~ OIL DISTILLATION,OAN
+DTP5.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 5,"optional, must be reported if established","Distillation volume temperature 5, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL6.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 6,"optional, must be reported if established",Distillation volume fraction 6,~ OIL DISTILLATION,OAN
+DTP6.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 6,"optional, must be reported if established","Distillation volume temperature 6, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL7.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 7,"optional, must be reported if established",Distillation volume fraction 7,~ OIL DISTILLATION,OAN
+DTP7.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 7,"optional, must be reported if established","Distillation volume temperature 7, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL8.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 8,"optional, must be reported if established",Distillation volume fraction 8,~ OIL DISTILLATION,OAN
+DTP8.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 8,"optional, must be reported if established","Distillation volume temperature 8, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL9.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 9,"optional, must be reported if established",Distillation volume fraction 9,~ OIL DISTILLATION,OAN
+DTP9.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 9,"optional, must be reported if established","Distillation volume temperature 9, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL10.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 10,"optional, must be reported if established",Distillation volume fraction 10,~ OIL DISTILLATION,OAN
+DTP10.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 10,"optional, must be reported if established","Distillation volume temperature 10, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL11.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 11,"optional, must be reported if established",Distillation volume fraction 11,~ OIL DISTILLATION,OAN
+DTP11.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 11,"optional, must be reported if established","Distillation volume temperature 11, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL12.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 12,"optional, must be reported if established",Distillation volume fraction 12,~ OIL DISTILLATION,OAN
+DTP12.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 12,"optional, must be reported if established","Distillation volume temperature 12, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL13.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 13,"optional, must be reported if established",Distillation volume fraction 13,~ OIL DISTILLATION,OAN
+DTP13.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 13,"optional, must be reported if established","Distillation volume temperature 13, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL14.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 14,"optional, must be reported if established",Distillation volume fraction 14,~ OIL DISTILLATION,OAN
+DTP14.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 14,"optional, must be reported if established","Distillation volume temperature 14, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL15.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 15,"optional, must be reported if established",Distillation volume fraction 15,~ OIL DISTILLATION,OAN
+DTP15.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 15,"optional, must be reported if established","Distillation volume temperature 15, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL16.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 16,"optional, must be reported if established",Distillation volume fraction 16,~ OIL DISTILLATION,OAN
+DTP16.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 16,"optional, must be reported if established","Distillation volume temperature 16, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL17.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 17,"optional, must be reported if established",Distillation volume fraction 17,~ OIL DISTILLATION,OAN
+DTP17.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 17,"optional, must be reported if established","Distillation volume temperature 17, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL18.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 18,"optional, must be reported if established",Distillation volume fraction 18,~ OIL DISTILLATION,OAN
+DTP18.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 18,"optional, must be reported if established","Distillation volume temperature 18, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL19.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 19,"optional, must be reported if established",Distillation volume fraction 19,~ OIL DISTILLATION,OAN
+DTP19.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 19,"optional, must be reported if established","Distillation volume temperature 19, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+DVL20.FRAC,"NUMB 4,2",VOLUME FRACTION POINT 20,"optional, must be reported if established",Distillation volume fraction 20,~ OIL DISTILLATION,OAN
+DTP20.DEGC,"NUMB 5,2",VOLUME TEMPERATURE POINT 20,"optional, must be reported if established","Distillation volume temperature 20, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+FBP.DEGC,"NUMB 5,2",FINAL BOILING POINT TEMPERATURE,"optional, must be reported if established","Final boiling point temperature, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+CRKBP.DEGC,"NUMB 5,2",CRACKED BOILING POINT TEMPERATURE,"optional, must be reported if established","Cracked boiling point temperature, (Degrees Celsius)",~ OIL DISTILLATION,OAN
+METHD.,CHAR 20,DISTILLATION METHOD,"optional, can be null",Method used in distillation,~ METHODS AND SUMMARIES,OAN
+PBARA.KPAA,"NUMB 4,1",ABSOLUTE BAROMETRIC PRESSURE,"optional, can be null","Absolute barometric pressure, kPaa",~ METHODS AND SUMMARIES,OAN
+TROOM.DEGC,"NUMB 5,2",ROOM TEMPERATURE,"optional, can be null. if present, must be > 0 and < 45","Lab room temperature, (Degrees Celsius)",~ METHODS AND SUMMARIES,OAN
+DVLNP.FRAC,"NUMB 4,2",NAPHTHA SUMMARY VOLUME FRACTION ,"optional, can be zero or null",Naphtha fraction ,~ METHODS AND SUMMARIES,OAN
+DVLKR.FRAC,"NUMB 4,2",KEROSENE SUMMARY VOLUME FRACTION,"optional, can be zero or null",Kerosene fraction,~ METHODS AND SUMMARIES,OAN
+DVLGO.FRAC,"NUMB 4,2",LIGHT GAS/OIL SUMMARY VOLUME FRACTION,"optional, can be zero or null",Light gas/oil fraction,~ METHODS AND SUMMARIES,OAN
+DVLRC.FRAC,"NUMB 4,2",RECOVERED SUMMARY VOLUME FRACTION,"optional, can be zero or null",Recovered fraction,~ METHODS AND SUMMARIES,OAN
+DVLRS.FRAC,"NUMB 4,2",RESIDUE SUMMARY VOLUME FRACTION,"optional, can be zero or null",Residue fraction,~ METHODS AND SUMMARIES,OAN
+DVLLS.FRAC,"NUMB 4,2",LOSS SUMMARY VOLUME FRACTION,"optional, can be zero or null",Distillation loss fraction,~ METHODS AND SUMMARIES,OAN
+CFACT.,"NUMB 5,1",CHARACTERIZATION FACTOR,"optional, can be zero or null",,~ METHODS AND SUMMARIES,OAN
+GCOM.,CHAR 240,GENERAL COMMENT,"optional, can be null",Free form general comment,~ METHODS AND SUMMARIES,OAN
+PASTYPE.,CHAR 7,DIGITAL DATA - WATER ANALYSIS ,pas-wan,"Water Analysis test, format",~ VERSION,WAN
+UNIT.,CHAR 1,UNITS FLAG,(m)etric,Metric Units for AER submission,~ VERSION,WAN
+VERS.,"NUMB 5,2",AER DIGITAL WELL TEST DATA,4,Current AER version for ASCII test data submission,~ VERSION,WAN
+UWI.,CHAR 20 ,UNIQUE WELL ID,uwi must be valid and exist on aer database.,Unique Well Identifier - Bottomhole location.,~ WELL INFORMATION,WAN
+DRILLEG.,NUMB 2 ,DRILLING LEG,"must be 01, 02, 03…09 (cannot be 0 or null)","Drilling Leg (Event or Occurrence). Together with the UWI, this is to help define the bottom of the specific drill hole.",~ WELL INFORMATION,WAN
+WLIC.,CHAR 9,AER WELL LICENSE NUMBER,well license number must match aer license number for uwi ,AER Well License Number,~ WELL INFORMATION,WAN
+FORM.,CHAR 20 ,FORMATION NAME,,Name of the geological formation/zone,~ WELL INFORMATION,WAN
+WSFL.,NUMB 2,WELL FLUID TYPE AT TEST DATE,"mandatory, must have a valid aer fluid code =  (01) oil, (02) gas, (06) water, or (17) crude bitumen","Type of Dominant Fluid Production/Pay (i.e. oil, gas, water)",~ WELL INFORMATION,WAN
+LABCO.,CHAR 60,LABORATORY NAME,,Company name conducting analysis,~ TEST DATA,WAN
+LFNUM.,CHAR 25,LABORATORY FILE NUMBER,,Identification number,~ TEST DATA,WAN
+TTOPL.M,"NUMB 6,2",TEST/PROD. INTERVAL TOP M KB (LOG),[ttopl] (interval top - log) must be > 0.0 and < [tbasl] (interval base - log),"Top of tested or producing interval - in log depth, measured mKB",~ TEST DATA,WAN
+TBASL.M,"NUMB 6,2",TEST/PROD. INTERVAL BASE M KB (LOG),[tbasl] (interval base - log) must be > 0.0 and => [ttopl] (interval top - log)  and cannot be greater than total well depth.,"Base of tested or producing interval - in log depth, measured mKB",~ TEST DATA,WAN
+SDAT.DAY,YYYY MM DD,DATE SAMPLED,must be >= spud date and <= abandoned date and <= submission date,Date sample gathered,~ TEST DATA,WAN
+IDENT.,CHAR 12,CONTAINER IDENTITY,,Identification code of container,~ TEST DATA,WAN
+SPNT.,NUMB 2,SAMPLE POINT CODE,"mandatory, must be valid aer sample point code (see footnote).",Sample gathering point,~ TEST DATA,WAN
+SPNTN.,CHAR 50,SAMPLE POINT NAME,,Laboratories Unique Text Description of Sample Gathering Point,~ TEST DATA,WAN
+ADAT.DAY,YYYY MM DD,DATE ANALYZED,must be >= [sdat] (sample date) and <= submission date,Date Sample Analysis,~ TEST DATA,WAN
+SPRES.KPAA,"NUMB 8,2",SAMPLE PRESSURE,"optional, if present can not be zero",Pressure as Sampled (in field) - kPaa,~ TEST DATA,WAN
+STEMP.DEGC,"NUMB 5,2",SAMPLE TEMPERATURE,"optional, if present can not be zero",Temperature as Sampled (in field) - DegC,~ TEST DATA,WAN
+RPRES.KPAA,"NUMB 8,2",RECEIVED PRESSURE,"optional, if present can not be zero",Pressure as Received (in Lab) -kPaa,~ TEST DATA,WAN
+RTEMP.DEGC,"NUMB 5,2",RECEIVED TEMPERATURE,"optional, if present can not be zero",Temperature as Received (in Lab) - DegC,~ TEST DATA,WAN
+DSTLOC.,CHAR 1,DST SAMPLE LOCATION,"if [spnt] (sample point code) = (50) then [dstloc] (dst sample location) must be (t)op, (m)iddle, or (b)ottom. else must be null.",,~ TEST DATA,WAN
+WANC.,CHAR 240,COMMENT ON SAMPLE,optional,General Free form Comment (regarding Sample or Analytical Procedures).,~ TEST DATA,WAN
+NA.MG/L,"NUMB 9,2",SODIUM CATION,"mandatory, can be zero",Sodium mg/L,~ WATER CATIONS,WAN
+NA.MEQ/L,"NUMB 9,2",SODIUM CATION CONCENTRATION,"mandatory, can be zero",Sodium milli-equivalent,~ WATER CATIONS,WAN
+K.MG/L,"NUMB 9,2",POTASSIUM CATION ,"mandatory, can be zero",Potassium mg/L,~ WATER CATIONS,WAN
+K.MEQ/L,"NUMB 9,2",POTASSIUM CATION CONCENTRATION,"mandatory, can be zero",Potassium milli-equivalent,~ WATER CATIONS,WAN
+CA.MG/L,"NUMB 9,2",CALCIUM CATION ,"mandatory, can be zero",Calcium mg/L,~ WATER CATIONS,WAN
+CA.MEQ/L,"NUMB 9,2",CALCIUM CATION CONCENTRATION,"mandatory, can be zero",Calcium milli-equivalent,~ WATER CATIONS,WAN
+MG.MG/L,"NUMB 9,2",MAGNESIUM CATION ,"mandatory, can be zero",Magnesium mg/L,~ WATER CATIONS,WAN
+MG.MEQ/L,"NUMB 9,2",MAGNESIUM CATION CONCENTRATION,"mandatory, can be zero",Magnesium milli-equivalent,~ WATER CATIONS,WAN
+BA.MG/L,"NUMB 9,2",BARIUM CATION ,"optional, can be zero",Barium mg/L,~ WATER CATIONS,WAN
+BA.MEQ/L,"NUMB 9,2",BARIUM CATION CONCENTRATION,"optional, can be zero",Barium milli-equivalent,~ WATER CATIONS,WAN
+SR.MG/L,"NUMB 9,2",STRONTIUM CATION,"optional, can be zero",Strontium mg/L,~ WATER CATIONS,WAN
+SR.MEQ/L,"NUMB 9,2",STRONTIUM CATION CONCENTRATION,"optional, can be zero",Strontium milli-equivalent,~ WATER CATIONS,WAN
+FE.MG/L,"NUMB 9,2",IRON CATION ,"optional, can be zero",Iron mg/L,~ WATER CATIONS,WAN
+FE.MEQ/L,"NUMB 9,2",IRON CATION  CONCENTRATION,"optional, can be zero",Iron milli-equivalent,~ WATER CATIONS,WAN
+MN.MG/L,"NUMB 9,2",MANGANESE CATION,"optional, can be zero",Manganese mg/L,~ WATER CATIONS,WAN
+MN.MEQ/L,"NUMB 9,2",MANGANESE CATION CONCENTRATION,"optional, can be zero",Manganese milli-equivalent,~ WATER CATIONS,WAN
+B.MG/L,"NUMB 9,2",BORON CATION ,"optional, can be zero",Boron mg/L,~ WATER CATIONS,WAN
+B.MEQ/L,"NUMB 9,2",BORON CATION CONCENTRATION,"optional, can be zero",Boron milli-equivalent,~ WATER CATIONS,WAN
+CL.MG/L,"NUMB 9,2",CHLORIDE ANION,"mandatory, can be zero",Chloride mg/L,~ WATER ANIONS,WAN
+CL.MEQ/L,"NUMB 9,2",CHLORIDE ANION CONCENTRATION,"mandatory, can be zero",Chloride milli-equivalent,~ WATER ANIONS,WAN
+BR.MG/L,"NUMB 9,2",BROMIDE ANION,"optional, can be zero",Bromide mg/L,~ WATER ANIONS,WAN
+BR.MEQ/L,"NUMB 9,2",BROMIDE ANION CONCENTRATION,"optional, can be zero",Bromide milli-equivalent,~ WATER ANIONS,WAN
+I.MG/L,"NUMB 9,2",IODIDE ANION,"optional, can be zero",Iodide mg/L,~ WATER ANIONS,WAN
+I.MEQ/L,"NUMB 9,2",IODIDE ANION CONCENTRATION,"optional, can be zero",Iodide milli-equivalent,~ WATER ANIONS,WAN
+HCO3.MG/L,"NUMB 9,2",BICARBONATE ANION,"mandatory, can be zero",Bicarbonate mg/L,~ WATER ANIONS,WAN
+HCO3.MEQ/L,"NUMB 9,2",BICARBONATE ANION CONCENTRATION,"mandatory, can be zero",Bicarbonate milli-equivalent,~ WATER ANIONS,WAN
+SO4.MG/L,"NUMB 9,2",SULPHATE ANION,"mandatory, can be zero",Sulphate mg/L,~ WATER ANIONS,WAN
+SO4.MEQ/L,"NUMB 9,2",SULPHATE ANION CONCENTRATION,"mandatory, can be zero",Sulphate milli-equivalent,~ WATER ANIONS,WAN
+CO3.MG/L,"NUMB 9,2",CARBONATE ANION,"mandatory, can be zero",Carbonate mg/L,~ WATER ANIONS,WAN
+CO3.MEQ/L,"NUMB 9,2",CARBONATE ANION CONCENTRATION,"mandatory, can be zero",Carbonate milli-equivalent,~ WATER ANIONS,WAN
+OH.MG/L,"NUMB 9,2",HYDROXIDE ANION,"mandatory, can be zero",Hydroxide mg/L,~ WATER ANIONS,WAN
+OH.MEQ/L,"NUMB 9,2",HYDROXIDE ANION CONCENTRATION,"mandatory, can be zero",Hydroxide milli-equivalent,~ WATER ANIONS,WAN
+DS110.MG/L,"NUMB 9,2",TOTAL DISSOLVED SOLIDS EVAPORATED @ 110 DEGC,"optional, can be zero",mg/L,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+DS180.MG/L,"NUMB 9,2",TOTAL DISSOLVED SOLIDS EVAPORATED @ 180 DEGC,"optional, can be zero",mg/L,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+H2S.MG/L,"NUMB 9,2",HYDROGEN SULPHIDE,"mandatory, can be zero",H2S mg/L,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+DSING.MG/L,"NUMB 9,2",TOTAL DISSOLVED SOLIDS AT IGNITION,"optional, can be zero",mg/L,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+DSCAL.MG/L,"NUMB 9,2",TOTAL DISSOLVED SOLIDS CALCULATED,must be > 0.0,mg/L,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+RDWTR.,"NUMB 4,3",RELATIVE DENSITY,"optional, can be zero",,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+RDTMP.DEGC,"NUMB 5,2",RELATIVE DENSITY TEMPERATURE DEGC,"optional, can be zero","Temperature whereby relative density measured, Degrees Celsius",~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+RFIDX.,"NUMB 5,2",REFRACTIVE INDEX ,"optional, can be zero",Refractive index,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+RFTMP.DEGC,"NUMB 5,2",REFRACTIVE INDEX TEMPERATURE,"optional, can be zero","Temperature whereby refractive index measured, Degrees Celsius",~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+PHOBS.,"NUMB 4,1",OBSERVED PH,must be > 0.0,Observed pH,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+PHTMP.DEGC,"NUMB 5,2",OBSERVED PH TEMPERATURE,must be > 0.0,"Temperature whereby pH observed, Degrees Celsius",~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+PEOHM.,"NUMB 7,2",RESISTIVITY,"optional, can be zero","Resistivity, Ohm-Meters",~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+PETMP.DEGC,"NUMB 5,2",RESISTIVITY TEMPERATURE,"optional, can be zero","Temperature whereby Resistivity measured, Degrees Celsius",~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+SALT.PCT,"NUMB 5,2",SALINITY TOTAL PERCENTAGE,"optional, can be zero",,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+GCOM.,CHAR 240,GENERAL COMMENT,"optional, can be zero",Free form general comment,~ WATER SOLIDS AND OTHER MEASUREMENTS,WAN
+PASTYPE.,CHAR 7,DIGITAL DATA - DST TEST DATA ,pas-dst,"Drill Stem Test, format",~ VERSION,DST
+UNIT.,CHAR 1,UNITS FLAG,(m)etric,Metric Units for AER submission,~ VERSION,DST
+VERS.,"NUMB 5,2",AER DIGITAL WELL TEST DATA,4,Current AER version for ASCII test data submission,~ VERSION,DST
+UWI.,CHAR 20 ,UNIQUE WELL ID,uwi must be valid and exist on aer database.,Unique Well Identifier - Bottomhole location.,~ WELL INFORMATION,DST
+DRILLEG.,NUMB 2 ,DRILLING LEG,"must be 01, 02, 03…09 (cannot be 0 or null)","Drilling Leg (Event or Occurrence). Together with the UWI, this is to help define the bottom of the specific drill hole.",~ WELL INFORMATION,DST
+WLIC.,CHAR 9,AER WELL LICENSE NUMBER,well license number must match aer license number for uwi ,AER Well License Number,~ WELL INFORMATION,DST
+POOL.,CHAR 1,AER DESIGNATED POOL,must be either (y)es or (n)o.,Within AER Defined Pool / G-Order at time of Drilling? Gas and Fluid Sampling Regulatory Requirements in accordance with AER Guide 40.,~ WELL INFORMATION,DST
+FORM.,CHAR 20 ,FORMATION NAME,,Name of the geological formation/zone,~ WELL INFORMATION,DST
+FLEXP.,NUMB 2 ,FLUID TYPE EXPECTED,"must have a valid aer fluid code =  (01) oil, (02) gas, (06) water, or (17) crude bitumen","Type of Dominant Fluid Production/Pay (i.e. oil well,  gas well, water well) Predominant fluid type needed to define as oil or gas test",~ WELL INFORMATION,DST
+WTYP.,CHAR 1,WELL TYPE INDICATOR ,"mandatory, if [prps] (purpose indicator) = (i)nitial. must be (v)ertical, (d)eviated or (h)orizontal","Flag indicating (V)ertical, (D)eviated, or (H)orizontal Wellbore",~ WELL INFORMATION,DST
+DPID.MM,"NUMB 4,1",DRILL PIPE ID,must be < 200,Inside diameter of drilling pipe (mm),~ WELL INFORMATION,DST
+PRPS.,CHAR 1,TEST PURPOSE ,"mandatory, must be (i)nitial pressure or (o)ther.","(I)nitial designates test for the fulfillment of AER Guide 40, Initial Pressure Testing Regulatory Requirements.  (O)ther indicates to comply exclusively with Oil & Gas Conservation Regulation 11.100, whereby all DST's must be submitted within 30 days of the Finished Drilling date.",~ TEST DATA,DST
+SERCO.,CHAR 5,SERVICE COMPANY CODE,,Company conducting test (see AER Website),~ TEST DATA,DST
+CCCO.,CHAR 20,CLOSED CHAMBER COMPANY,"mandatory, if [ttyp] (dst test type code) = (08) or (18).",Name of Company Conducting Closed Chamber Test,~ TEST DATA,DST
+TTYP.,CHAR 2 ,DST TEST TYPE CODE,must be valid aer pas-dst test code (see footnote).,,~ TEST DATA,DST
+RUNUM.,NUMB 2,RUN NUMBER,,Run Number / Trip Number into Hole - for Testing,~ TEST DATA,DST
+TNUM.,NUMB 4,DST NUMBER,,DST Number (i.e. DST no.3),~ TEST DATA,DST
+H2SIND.,CHAR 1,H2S INDICATOR,must be (y)es or (n)one.,Flag indicating presence of H2S,~ TEST DATA,DST
+TTOPL.M,"NUMB 6,2",TEST/PROD INTERVAL TOP M KB (LOG),[ttopl] (interval top - log) must be > 0.0 and < [tbasl] (interval base - log),"Top of tested or producing interval - in log depth, measured mKB",~ TEST DATA,DST
+TBASL.M,"NUMB 6,2",TEST/PROD INTERVAL BASE M KB (LOG),[tbasl] (interval base - log) must be > 0.0 and => [ttopl] (interval top - log)  and cannot be greater than total well depth.,"Base of tested or producing interval - in log depth, measured mKB",~ TEST DATA,DST
+TTOPT.M,"NUMB 6,2",TEST/PROD INTERVAL TOP M KB (TVD),"if [prps] (purpose indicator) = (i)nitial. if [wtyp] (well type indicator) = (d)eviated or (h)orizontal, then [ttopt] (interval top - tvd) must be <  [ttopl] (interval base - log), else if  [wtyp] = (v)ertical, then [ttopt] must = [ttopl] ","Top of tested or producing interval - in true vertical depth, calculated mKB",~ TEST DATA,DST
+TBAST.M,"NUMB 6,2",TEST/PROD INTERVAL BASE M KB (TVD),"if [prps] (purpose indicator) = (i)nitial. if [wtyp] (well type indicator) = (d)eviated or (h)orizontal, then [tbast] (interval base - tvd) must be <  [tbasl] (interval base - log),  else if  [wtyp] = (v)ertical, then [tbast] must = [tbasl]","Base of tested or producing interval  in true vertical depth, calculated mKB",~ TEST DATA,DST
+FTDT.DAY/HR,YYYY MM DD HHHH,TEST FINAL DATE/TIME,must be >= spud date and <= abandoned date and <= submission date,Date/Time test ended,~ TEST DATA,DST
+MSRN.,CHAR 1,TEST MISRUN INDICATOR,must be (y)es or (n)o.  if [msrn] = (y)es then [prps] (test purpose) must = (o)ther,Flag indicating Misrun of Test,~ TEST DATA,DST
+GSERU.,CHAR 20,GAUGE SERIAL NUMBER USED IN SUMMARY,mandatory,Serial number of Gauge/Recorder used for representative reservoir pressure,~ TEST SUMMARY DATA,DST
+SDGAL.M,"NUMB 10,5",REPRESENTATIVE GAUGE DEPTH M (LOG),must be <= [tbasl] (interval base - log),"(LOG) Depth of Gauge/Recorder, representative of reservoir",~ TEST SUMMARY DATA,DST
+SDGAT.M,"NUMB 10,5",REPRESENTATIVE GAUGE DEPTH M (TVD),"mandatory, if [prps] (test purpose indicator) = (i)nitial, else optional.   if present and [wtyp] (well type indicator) = (d)eviated or (h)orizontal; [sdgat] (representative gauge depth - tvd) must be <= [sdgal] (representative gauge depth - log), else [sdgat must = [sdgal] ","(TVD) Depth of Gauge/Recorder, representative of reservoir",~ TEST SUMMARY DATA,DST
+PRGA.KPAA,"NUMB 8,2",PRESSURE AT GAUGE DEPTH KPAA,"mandatory, if [msrn] (test misrun indicator) = (n)o, otherwise can be null",Most representative shut-in pressure recorded at Gauge/Recorder Depth,~ TEST SUMMARY DATA,DST
+PEXTR.KPAA,"NUMB 8,2",REPRESENTATIVE EXTRAP/ FALSE PRESSURE,"mandatory, if [prps] (test purpose) = (i)nitial pressure; must match one entry of [pextr] from [dtfg (n)] table. must be => than [prga] (gauge pressure at end of stage) but cannot exceed [prga] by > 6%.",,~ TEST SUMMARY DATA,DST
+PRFFG.KPAA,"NUMB 8,2",FINAL FLOWING PRESSURE AT GAUGE DEPTH KPAA,"mandatory, if [msrn] (test misrun indicator) = (n)o",Final Measured Representative Flowing Gauge/Recorder Pressure kPaa,~ TEST SUMMARY DATA,DST
+STGR.KPA/M,"NUMB 5,3",REPRESENTATIVE PRESSURE GRADIENT,"mandatory, if [prps] (test purpose indicator) = (i)nitial. can not be zero. if [msrn] (test misrun indicator) = (y)es, can be null.",,~ TEST SUMMARY DATA,DST
+TRES.DEGC,"NUMB 5,2",RESERVOIR TEMPERATURE,"optional. if present, must be > zero",,~ TEST SUMMARY DATA,DST
+QGMX.E3M3/D,"NUMB 13,4",MAXIMUM GAS FLOW RATE,"mandatory, if [qgff] (final gas flow rate) > 0.00. can be zero.  ","Maximum Flowing Gas Rate during test, (103m3/d)",~ TEST SUMMARY DATA,DST
+QOMX.M3/D,"NUMB 13,4",MAXIMUM  OIL FLOW RATE,"mandatory, if [qoff] (final oil flow rate) > 0.00. can be zero.  ","Maximum Flowing Oil Rate during test, (m3/d)",~ TEST SUMMARY DATA,DST
+QWMX.M3/D,"NUMB 13,4",MAXIMUM  WATER FLOW RATE,"mandatory, if [qwff] (final water flow rate) > 0.00. can be zero.  ","Maximum Flowing Water Rate during test, (m3/d)",~ TEST SUMMARY DATA,DST
+TFGS.MIN,"NUMB 10,5",TIME FOR FINAL GAS FLOW TO SURFACE,"mandatory, if [qgmx] (maximum gas flow rate) > 0.0, else must be null. can be zero.","Length of time for gas to reach surface (minutes). Note: ""Immediate"" Flow to Surface = 0 (zero) minutes.",~ TEST SUMMARY DATA,DST
+TFOS.MIN,"NUMB 10,5",TIME FOR FINAL OIL FLOW TO SURFACE,"mandatory, if [qomx] (maximum oil flow rate) > 0.0, else must be null. can be zero.","Length of time for oil to reach surface (minutes). Note: ""Immediate"" Flow to Surface = 0 (zero) minutes.",~ TEST SUMMARY DATA,DST
+TFWS.MIN,"NUMB 10,5",TIME FOR FINAL WATER FLOW TO SURFACE,"mandatory, if [qwmx] (maximum water flow rate) > 0.0, else must be null. can be zero.","Length of time for water to reach surface (minutes). Note: ""Immediate"" Flow to Surface = 0 (zero) minutes.",~ TEST SUMMARY DATA,DST
+GENC.,CHAR 240,COMMENT - GENERAL,optional,"Free form comment. Note: IF PRPS = (I), GENC copied to AER Pressure Summary database.",~ TEST SUMMARY DATA,DST
+MUTP.,CHAR 12,MUD/DRILLING FLUID TYPE,,Identify fluid used to drill well,~ MUD AND CUSHION,DST
+MUWT.KG/M3,"NUMB 9,4",MUD WEIGHT,must be > 300 and < 3000,The measurement of the drilling mud mass/volume,~ MUD AND CUSHION,DST
+CUTP.,NUMB 1,CUSHION TYPE CODE,"must = (0) none, (1) water, (2) oil, (3) nitrogen, (4) diesel,  or (5) inhibitor & water",Cushion Fluid used during test.,~ MUD AND CUSHION,DST
+CUGP.KPAA,"NUMB 8,2",CUSHION GAS PRESSURE,if cutp (cushion type code) = (3) then cugp (cushion gas pressure) must be present.,Surface Pressure Pumped In (kPaa),~ MUD AND CUSHION,DST
+CUIL.M,"NUMB 10,5",INITIAL CUSHION LENGTH,if cutp (cushion type code) <> (0) or (3) then cuil (initial cushion length) must be present.,The length of cushion present during test (m),~ MUD AND CUSHION,DST
+LCGR.KPA/M,"NUMB 5,3",LIQUID CUSHION GRADIENT,"if  cutp (cushion type code) <> (0) or (3), then lcgr (liquid cushion gradient) must be present.",Gradient of liquid portion of cushion (kPa/m),~ MUD AND CUSHION,DST
+MTST.,CHAR 1,MULTIPLE TEST RECOVERY INDICATOR,"must be either (y)es or (n)o. if [mtst] (multiple test recovery indicator) = (y)es, then >1 [rxxa] (recovery amount) must be reported.",Flag indicating recovery from multiple tests,~ RECOVERIES - DST,DST
+RPXX.,CHAR 1,RECOVERY VOLUME TYPE INDICATOR,"must be (v)olume, (h)eight in metres, or (n)one. if [mtst] (multiple test recovery indicator) = (y)es, then [rpxx] (recovery volume type indicator) can not = (n)one.",Flag indicating unit of measure for Recovered amounts,~ RECOVERIES - DST,DST
+RXXA.MorM3,"NUMB 13,4",RECOVERY AMOUNT - (M or M3),"[rxxa] must be reported in ""m"" meters if [rpxx] (recovery volume indicator) = (h)eight; [rxxa] must be reported in ""m3"" cubic metres if [rpxx] (recovery volume indicator) = (v)olume.   if [rpxx] = (h)eight, then the total of the first 6 recoveries (amount in meters) can not be > [ttopl] (interval top -log) by more than 10 meters.","Amount of recovery in volume or height as indicated above (see RPXX).      Specific Unit must be noted depending of type of Recovery Amount (i.e. if ""meters"" are to be reported, then Mnemonic must equal [RXXA.M]. However if ""cubic meters"" are to be reported, then Mnemonic must = [RXXA.M3].",~ DATA TABLE - RECOVERIES,DST
+RXXC.,NUMB 3,RECOVERY TYPE CODE,[rxxc] (recovery fluid type code) must be valid aer code (see footnote),Recovery Type Code,~ DATA TABLE - RECOVERIES,DST
+RXXD.,CHAR 30,RECOVERIES DESCRIPTION,description must be provided if [rpxx] (recovery volume indicator) = (v)olume or (h)eight,Description of Recoveries,~ DATA TABLE - RECOVERIES,DST
+MSRNG.,CHAR 1,GAUGE MISRUN INDICATOR,"must be (y)es or (n)o.  match; [gseru] (gauge serial number used in summary) = [gser] (gauge serial number) and if [msrn] (test misrun indicator) = (n)o, then [msrng] must = '(n)o",Flag indicating Gauge/Recorder Misrun (not entire test),~ HEADER DATA - GAUGE (n),DST
+GSER.,CHAR 20,GAUGE SERIAL NUMBER,one gauge must match [gseru] (gauge serial number used in summary),Serial or Reference number of Gauge/Recorder. Note: Number required for the ability to audit gauge data.,~ HEADER DATA - GAUGE (n),DST
+GTYP.,CHAR 30,GAUGE TYPE,,"Type of gauge used (mechanical or electronic, model)",~ HEADER DATA - GAUGE (n),DST
+GMAN.,CHAR 60,GAUGE MANUFACTURER,,Name of manufacturer of Gauge/Recorder,~ HEADER DATA - GAUGE (n),DST
+GRNG.KPAA,"NUMB 8,2",MAXIMUM RECORDER RANGE,,Full scale pressure range of Gauge/Recorder (kPaa),~ HEADER DATA - GAUGE (n),DST
+GCAL.DAY,YYYY MM DD,DATE OF LAST CALIBRATION,must be < = [ftdt] (final test date/time),Date source Gauge/Recorder last calibrated,~ HEADER DATA - GAUGE (n),DST
+GRES.,"NUMB 6,5",RESOLUTION % OF FULL-SCALE,,Published Resolution of Gauge/Recorder (Percentage),~ HEADER DATA - GAUGE (n),DST
+GACC.,"NUMB 6,5",ACCURACY % OF FULL-SCALE ,,Published accuracy of Gauge/Recorder (Percentage),~ HEADER DATA - GAUGE (n),DST
+SDGL.M,"NUMB 10,5",GAUGE RUN DEPTH M KB (LOG),,Gauge/Recorder depth (Measured Depth/LOG) in mKB,~ HEADER DATA - GAUGE (n),DST
+SDGT.M,"NUMB 10,5",GAUGE RUN DEPTH M KB (TVD),"mandatory, if [wtyp] (well type) = (d)eviated or (h)orizontal  ",Gauge/Recorder depth (Calculated Depth/TVD) in mKB,~ HEADER DATA - GAUGE (n),DST
+GPOS.,CHAR 1,GAUGE POSITION INDICTOR ,"[gpos] (gauge position indicator) must be (i)nside, (o)utside, (r)ecovery, (b)elow straddle, i(n)flate, or (u)nknown/other.  if [gseru] = [gser] [gpos] can not be = (u)nknown/other","Flag indicating position of Gauge/Recorder - (I)nside, (O)utside, Fluid/(R)ecovery, (B)elow Straddle, I(N)flate, of (U)nknown/Other",~ HEADER DATA - GAUGE (n),DST
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,if [msrn] (test misrun indicator) = (y)es can be null; if present must be >= spud date and <= abandoned date and <= submission date,24 Hour Clock.,~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+STGE.,CHAR 2,STAGE NUMBER,"if [msrn] (test misrun indicator) = (y)es, can be null",Test stage number,~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+FSTGC.,CHAR 22,STAGE DESCRIPTION,"if [msrn] (test misrun indicator) = (y)es, can be null","(i.e. Initial Hydrostatic, Start of 1st Flow)",~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+PRGA.KPAA,"NUMB 8,2",GAUGE  PRESSURE AT END OF STAGE,"mandatory, if [msrn] (test misrun indicator) = (n)o, else can be null",Primary Gauge/Recorder pressure,~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+TSTD.MIN,"NUMB 10,5",STAGE DURATION MINUTES,"if [msrn] (test misrun indicator) = (y)es, can be null. one occurrence per table must be > 0.0",Duration of stage,~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+PEXTR.KPAA,"NUMB 8,2",REPRESENTATIVE EXTRAP/ FALSE PRESSURE,"mandatory, if [prps] (test purpose) = (i)nitial, at least one occurrence of [pextr] must be present in table. must be >= [prga] (gauge pressure at end of same stage) but cannot exceed [prga] by > 6%.",,~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+QGFF.E3M3/D,"NUMB 13,4",FINAL GAS FLOW RATE,"mandatory if [msrn] (test misrun indicator) = (n)o, and at least one occurrence per table, can be zero. else can be null.","Flow Rate of Gas, at end of stage (103m3/d).",~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+QOFF.M3/D,"NUMB 13,4",FINAL OIL FLOW RATE,"mandatory if [msrn] (test misrun indicator) = (n)o, and at least one occurrence per table, can be zero. else can be null.","Flow Rate of Oil, at end of stage (m3/d).",~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+QWFF.M3/D,"NUMB 13,4",FINAL WATER FLOW RATE,"mandatory if [msrn] (test misrun indicator) = (n)o, and at least one occurrence per table, can be zero. else can be null.","Flow Rate of Water, at end of stage (m3/d).",~ DATA TABLE - FLOWING SUMMARY - GAUGE (n),DST
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,"if [msrn] (test misrun indicator) = (n)o, then must be >= spud date and <= abandoned date and <= submission date",24 Hour Clock,~ DATA TABLE - GAUGE (n),DST
+PRGA.KPAA,"NUMB 8,2",GAUGE PRESSURE KPAA,,Pressure measured at that interval in time via source Gauge/Recorder,~ DATA TABLE - GAUGE (n),DST
+TGA.DEGC,"NUMB 5,2",GAUGE TEMPERATURE,,Temperature measured at that interval in time via source Gauge/Recorder (DegC),~ DATA TABLE - GAUGE (n),DST
+GCOM.,CHAR 240,GENERAL COMMENT,optional,Free form comment,~ DATA TABLE - GAUGE (n),DST
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,"if [ttyp] (test type indicator) = (08) or (18), then must be >= spud date and <= abandoned date and <= submission date",24 Hour clock,~ DATA TABLE - CLOSED CHAMBER,DST
+SDPT.KPAA/MIN,"NUMB 8,2",SURFACE DP/DT KPAA/MIN ,"mandatory, if [ttyp] (test type indicator) = (08) or (18). can be zero and can be negative.",Change in Surface pressure/time,~ DATA TABLE - CLOSED CHAMBER,DST
+PSUR.KPAA,"NUMB 8,2",SURFACE PRESSURE,"mandatory, if [ttyp] (test type indicator) = (08) or (18). can not be zero",Surface pressure (kPaa),~ DATA TABLE - CLOSED CHAMBER,DST
+RDPT.KPAA/MIN,"NUMB 8,2",RECOVERY DP/DT KPAA/MIN,"optional, if provided can be zero.",Change in recovery pressure/time,~ DATA TABLE - CLOSED CHAMBER,DST
+PRCV.KPAA,"NUMB 8,2",RECOVERY PRESSURE,"optional, if provided can not be zero. ",Recovery pressure (kPaa),~ DATA TABLE - CLOSED CHAMBER,DST
+QCCLIQ.M3/D,"NUMB 13,4",CALC LIQUID RATE,"mandatory, if [ttyp] (test type indicator) = (08) or (18), and can be zero",m3/d,~ DATA TABLE - CLOSED CHAMBER,DST
+QCCGAS.E3M3/D,"NUMB 13,4",CALC GAS RATE,"mandatory, if [ttyp] (test type indicator) = (08) or (18), and can be zero",103m3/d,~ DATA TABLE - CLOSED CHAMBER,DST
+PASTYPE.,CHAR 7,DIGITAL DATA - PRODUCTION TEST DATA ,pas-prd,"Field Production Notes - test information, format",~ VERSION,PRD
+UNIT.,CHAR 1,UNITS FLAG,(m)etric,Metric Units for AER submission,~ VERSION,PRD
+VERS.,"NUMB 5,2",AER DIGITAL WELL TEST DATA,4,Current AER version for ASCII test data submission,~ VERSION,PRD
+UWI.,CHAR 20 ,UNIQUE WELL ID,uwi must be valid and exist on aer database.,Unique Well Identifier - Bottomhole location.,~ WELL INFORMATION,PRD
+DRILLEG.,NUMB 2 ,DRILLING LEG,"must be 01, 02, 03…09 (cannot be 0 or null)","Drilling Leg (Event or Occurrence). Together with the UWI, this is to help define the bottom of the specific drill hole.",~ WELL INFORMATION,PRD
+WLIC.,CHAR 9,AER WELL LICENSE NUMBER,well license number must match aer license number for uwi ,AER Well License Number,~ WELL INFORMATION,PRD
+FORM.,CHAR 20 ,FORMATION NAME,,Name of the geological formation/zone,~ WELL INFORMATION,PRD
+WSFL.,NUMB 2,WELL FLUID TYPE AT TEST DATE,"must have a valid aer fluid code =  (01) oil, (02) gas, (06) water, or (17) crude bitumen","Type of Dominant Fluid Production/Pay (i.e. oil, gas, water)",~ WELL INFORMATION,PRD
+SERCO.,CHAR 5,SERVICE COMPANY CODE,,Company conducting test (see AER Website) ,~ TEST DATA,PRD
+RRUN.,CHAR 1,RECORDERS RUN,must be (y)es or (n)o,Flag indicating Pressure Gauges ran during operations,~ TEST DATA,PRD
+TTOPL.M,"NUMB 6,2",TEST/PROD. INTERVAL TOP M KB (LOG),[ttopl] (interval top - log) must be > 0.0 and < [tbasl] (interval base - log),"Top of tested or producing interval - in log depth, measured mKB",~ TEST DATA,PRD
+TBASL.M,"NUMB 6,2",TEST/PROD. INTERVAL BASE M KB (LOG),[tbasl] (interval base - log) must be > 0.0 and => [ttopl] (interval top - log)  and cannot be greater than total well depth.,"Base of tested or producing interval - in log depth, measured mKB",~ TEST DATA,PRD
+FTDT.DAY/HR,YYYY MM DD HHHH,TEST FINAL  DATE/TIME,must be >= spud date and <= abandoned date and <= submission date,Date/time of last measured flowrate,~ TEST DATA,PRD
+FLGAS.E3M3,"NUMB 13,4",GAS FLARED E3M3,"mandatory, must be >= 0.0",(103m3) Over duration of reported production in DTSUM Table,~ TEST DATA,PRD
+INGAS.E3M3,"NUMB 13,4",GAS INCINERATED E3M3,"mandatory, must be >= 0.0",(103m3) Over duration of reported production in DTSUM Table,~ TEST DATA,PRD
+PLGAS.E3M3,"NUMB 13,4",GAS PRODUCED TO PIPELINE E3M3,"mandatory, must be >= 0.0",(103m3) Over duration of reported production in DTSUM Table,~ TEST DATA,PRD
+VNGAS.E2M3,"NUMB 13,4",GAS VENTED E3M3,"mandatory, must be >= 0.0",(103m3) Over duration of reported production in DTSUM Table,~ TEST DATA,PRD
+MDTYPE.,CHAR 1,METERING DEVICE TYPE INDICATOR ,"must = (p)rover, (o)rifice, (t)urbine, p(i)tiot tube, (c)hoke, (v)-cone, or ot(h)er","Flag - (P)rover, (O)rifice, (T)urbine, P(i)tiot Tube, (C)hoke, (V)-Cone or Ot(H)er",~ METER GAS (n),PRD
+RDGAS.,"NUMB 4,3",GAS RELATIVE DENSITY,,,~ METER GAS (n),PRD
+N2.FRAC,"NUMB 5,4",NITROGEN,can be zero. can not be null,"Mole fraction, air free as received",~ METER GAS (n),PRD
+CO2.FRAC,"NUMB 5,4",CARBON DIOXIDE,can be zero. can not be null,"Mole fraction, air free as received",~ METER GAS (n),PRD
+H2S.FRAC,"NUMB 7,6",HYDROGEN SULPHIDE for METERING DEVICE CALC,can be zero. can not be null,"Mole fraction, air free as received",~ METER GAS (n),PRD
+PATM.KPA,"NUMB 8,2",ATMOSPHERIC PRESSURE,must be  > 85  and < 105,,~ METER GAS (n),PRD
+TAP.,CHAR 1,TAP TYPE INDICATOR,"if [mdtype] (metering device type indicator) = (o)rifice, then must indicate (f)langed or (p)ipe. ",Flag indicating taps (F)langed or (P)ipe,~ METER GAS (n),PRD
+TAPL.,CHAR 1,TAP LOCATION INDICATOR,"if [mdtype] (metering device type indicator) = (o)rifice, then must indicate (u)p stream or (d)own stream. ",Flag indicating location of taps (U)p Stream or (D)own stream,~ METER GAS (n),PRD
+RSIZ.MM,"NUMB 8,3",METER RUN / PROVER SIZE,"mandatory, must be => 0.0 if [mdtype] (metering device type indicator) = (p)rover, (o)rifice, p(i)tiot, or (v)-cone",Inside diameter of Meter Run / Prover,~ METER GAS (n),PRD
+TCON.PULSES/M3,"NUMB 10,5",TURBINE DEVICE CONSTANT,"mandatory, if [mdtype] (metering device type indicator) = (t)urbine. ",,~ METER GAS (n),PRD
+ICON.,"NUMB 10,5",PITIOT TUBE DEVICE CONSTANT,"mandatory, if [mdtype] (metering device type indicator) = p(i)tiot",,~ METER GAS (n),PRD
+BETA.,"NUMB 10,7",V-CONE BETA RATIO,"mandatory, if [mdtype] (metering device type indicator) = (v), else can be null. can be zero.",V-Cone beta ratio,~ METER GAS (n),PRD
+MCOF.,"NUMB 10,7",V-CONE METER COEFFICIENT,"mandatory, if [mdtype] (metering device type indicator) = (v), else can be null. can be zero.",V-Cone Meter coefficient,~ METER GAS (n),PRD
+MCOMG.,CHAR 240,COMMENT - GAS METER,,Provides additional information about the meter being used,~ METER GAS (n),PRD
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,must be >= spud date and <= abandoned date and <= submission date ,24 Hour clock. Must correspond to [FTDT] (Test Final Date/Time) ,~ DATA TABLE GAS (n),PRD
+QGAS.E3M3/D,"NUMB 13,4",GAS RATE,at least one value > = 0.00 must appear in table.,Gas rate reading,~ DATA TABLE GAS (n),PRD
+H2S.FRAC,"NUMB 7,6",HYDROGEN SULPHIDE MOLE FRACTION,optional,,~ DATA TABLE GAS (n),PRD
+PLATE.MM,"NUMB 8,3",ORIFICE /CHOKE PLATE SIZE,"mandatory, if [mdtype] (metering device type indicator) = (c)hoke or (o)rifice, else null. can be zero",,~ DATA TABLE GAS (n),PRD
+STAG.KPAA,"NUMB 8,2",METER PRESSURE (GAS) ,,Pressure used for Super Compressibility Calculation,~ DATA TABLE GAS (n),PRD
+DIFG.KPA,"NUMB 8,2",PRESSURE DIFFERENTIAL (GAS),"mandatory, if [mdtype] (metering device type indicator) = (c)hoke, (o)rifice, p(i)tiot, or (v)-cone, else can be zero or null",(kPa),~ DATA TABLE GAS (n),PRD
+TMPG.DEGC,"NUMB 5,2",METER TEMPERATURE,,Temperature used for Super Compressibility Calculation,~ DATA TABLE GAS (n),PRD
+TRBG.PULSE,"NUMB 8,3 14,3",TURBINE METER READING,"mandatory, if [mdtype] (metering device type indicator) = (t)urbine, else must be null.",,~ DATA TABLE GAS (n),PRD
+N2.FRAC,"NUMB 5,4",NITROGEN MOLE FRACTION,optional,,~ DATA TABLE GAS (n),PRD
+CO2.FRAC,"NUMB 5,4",CARBON DIOXIDE MOLE FRACTION,optional,,~ DATA TABLE GAS (n),PRD
+RCOMP.,CHAR 240,GAS COMPOSITION COMMENT,optional,Gas composition as measured throughout the test,~ DATA TABLE GAS (n),PRD
+LIQT.,CHAR 1,LIQUID TYPE INDICATOR,must be (o)il or (c)ondensate or (w)ater,"Flag indicating (O)il, (W)ater, (C)ondensate",~ METER LIQUID (n),PRD
+LQMTYP.,CHAR 1,METERING DEVICE TYPE INDICATOR,"must be (t)urbine, (l)evel, (v)olume, (o)ther","Flag - (T)urbine, (L)evel, (V)olume, (O)ther",~ METER LIQUID (n),PRD
+TCON.PULSE/M3,"NUMB 10,5",TURBINE DEVICE K-FACTOR,"mandatory, if [lqmtyp] (metering device type indicator) = (t)urbine, then must provide k-factor ",Manufacturer specific K-Factor,~ METER LIQUID (n),PRD
+TMEA.,CHAR 1,TANK MEASUREMENT INDICATOR,"mandatory, if [lqmtyp] (metering device type indicator) = (l)evel or (v)olume, then must indicate if measurement is (i)ncremental or (c)umulative else can be null",Flag indicating (I)ncremental or (C)umulative measurement,~ METER LIQUID (n),PRD
+TEQU.,CHAR 240,TANK EQUATION,"mandatory, if [lqmtyp] (metering device type indicator) = (l)evel, must provide tank measurement and volume equation.",Equation illustration,~ METER LIQUID (n),PRD
+MCOML.,CHAR 240,COMMENT - LIQUID METER,,Provides additional information about the meter being used,~ METER LIQUID (n),PRD
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,must be >= spud date and <= abandoned date and <= submission date ,24 Hour clock. Must correspond to [FTDT] (Test Final Date/Time) ,~ DATA TABLE LIQUID (n),PRD
+GNLF.MM,"NUMB 8,3",TANK GAIN LEVEL,"mandatory, if [lqmtyp] (metering device type indicator) = (l)evel, and at least one value > = 0.00 must appear in table.",,~ DATA TABLE LIQUID (n),PRD
+GNVF.M3,"NUMB 8,3",TANK GAIN VOLUME,"mandatory, if [lqmtyp] (metering device type indicator) = (l)evel or (v)olume, and at least one value > = 0.00 must appear in table.",,~ DATA TABLE LIQUID (n),PRD
+TRBF.PULSE,"NUMB 14,3 ",TURBINE METER READING,"mandatory, if [lqmtyp] (metering device type indicator) = (t)urbine",,~ DATA TABLE LIQUID (n),PRD
+API.,"NUMB 4,2",API GRAVITY @ 15 DegC,"optional.  if present, can not be zero.","Measured Gravity of Produced Oil, Degrees API",~ DATA TABLE LIQUID (n),PRD
+BSW.FRAC,"NUMB 4,3",FRACTION OF TOTAL BS&W,"mandatory, if [liqt] (liquid type indicator) = (o)ii,  and at least one value > = 0.00 must appear in table.","Basic sand and water volume fraction, total",~ DATA TABLE LIQUID (n),PRD
+SALT.PPM,"NUMB 8,0",SALINITY PPM,"optional. if present, can be zero.",Salinity of produced fluid (PPM),~ DATA TABLE LIQUID (n),PRD
+PH.,"NUMB 3,1",PH,optional. if present must be >0 and < 14.,pH concentration of produced fluid,~ DATA TABLE LIQUID (n),PRD
+OILRATE.M3/D,"NUMB 13,4",OIL RATE,"mandatory, if meter liquid (n) [liqt] (liquid type indicator) = (o)il and at least one value >0.00 must appear in table.","Produced oil only, not load or frac oil",~ DATA TABLE LIQUID (n),PRD
+CONRATE.M3/D,"NUMB 13,4",CONDENSATE RATE ,"mandatory, if, meter liquid (n) [liqt] (liquid type indicator) = (c)ondensate and at least one value >0.00 must appear in table.",,~ DATA TABLE LIQUID (n),PRD
+WTRRATE.M3/D,"NUMB 13,4",WATER RATE,"mandatory, if, meter liquid (n) [liqt] (liquid type indicator) = (w)ater and at least one value >0.00 must appear in table.",,~ DATA TABLE LIQUID (n),PRD
+QLIQ.M3/D,"NUMB 13,4",MEASURED TOTAL LIQUID RATE,must = [oilrate] (oil rate) + [conrate] (condensate rate) + [wtrrate] (water rate),Total Combined Liquid Rate,~ DATA TABLE LIQUID (n),PRD
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,must be >= spud date and <= abandoned date and <= submission date ,24 Hour clock. Must correspond to [FTDT] (Test Final Date/Time) ,~ DATA TABLE SUMMARY,PRD
+TWH.DEGC,"NUMB 5,2",WELLHEAD TEMPERATURE,"optional, can be zero",Temperature measured at wellhead (DegC),~ DATA TABLE SUMMARY,PRD
+TUPS.KPAA,"NUMB 8,2",TUBING PRESSURE,"mandatory, if [csps] (casing pressure) is null. can be zero.",(kPaa),~ DATA TABLE SUMMARY,PRD
+TTUB.DEGC,"NUMB 5,2",TUBING TEMPERATURE,"optional, can be zero",(DegC),~ DATA TABLE SUMMARY,PRD
+CSPS.KPAA,"NUMB 8,2",CASING PRESSURE,"mandatory, if [tups] (tubing pressure) is null. can be zero.",(kPaa),~ DATA TABLE SUMMARY,PRD
+TCAS.DEGC,"NUMB 5,2",CASING TEMPERATURE,"optional, can be zero",(DegC),~ DATA TABLE SUMMARY,PRD
+QTGAS.E3M3/D,"NUMB 13,4",TOTAL GAS RATE ALL METERS,"mandatory, if [vtgas] = (total gas volume produced) >0.00",,~ DATA TABLE SUMMARY,PRD
+QTOIL.M3/D,"NUMB 13,4",TOTAL OIL RATE ALL METERS,"mandatory, if [vtoil] = (total oil volume produced) >0.00","Produced oil only, not load or frac oil",~ DATA TABLE SUMMARY,PRD
+QTCON.M3/D,"NUMB 13,4",TOTAL CONDENSATE RATE ALL METERS,"mandatory, if [vtcon] = (total condensate volume produced) >0.00",,~ DATA TABLE SUMMARY,PRD
+QTWTR.M3/D,"NUMB 13,4",TOTAL WATER RATE ALL METERS,"mandatory, if [vtwtr] = (total water volume produced) >0.00",,~ DATA TABLE SUMMARY,PRD
+VTGAS.E3M3,"NUMB 13,4",CUMULATIVE TOTAL GAS VOLUME ALL METERS,[vtgas] (last line dtsum ) must equal total of [flgas] + [ingas] + [plgas] + [vngas]. can be zero.,"Cumulative volume produced during test. All Methods, Flared, Incinerated, Vented or Inline/(Pipelined)",~ DATA TABLE SUMMARY,PRD
+VTOIL.M3,"NUMB 13,4",CUMULATIVE TOTAL OIL VOLUME ALL METERS,can be zero.,"Cumulative volume produced during test. Produced oil only, not load or frac oil",~ DATA TABLE SUMMARY,PRD
+VTCON.M3,"NUMB 13,4",CUMULATIVE TOTAL CONDENSATE VOLUME ALL METERS,can be zero.,Cumulative volume produced during test,~ DATA TABLE SUMMARY,PRD
+VTWTR.M3,"NUMB 13,4",CUMULATIVE TOTAL WATER VOLUME ALL METERS,can be zero.,Cumulative volume produced during test,~ DATA TABLE SUMMARY,PRD
+COMM.,CHAR 240,COMMENT,,General Test Comments (i.e. Text Descriptions regarding specific operations),~ DATA TABLE SUMMARY,PRD
+PASTYPE.,CHAR 7,DIGITAL DATA - GAS/GAS LIQUIDS ANALYSIS ,pas-gan,"Gas Analysis test, format",~ VERSION,GAN
+UNIT.,CHAR 1,UNITS FLAG,(m)etric,Metric Units for AER submission,~ VERSION,GAN
+VERS.,"NUMB 5,2",AER DIGITAL WELL TEST DATA,4,Current AER version for ASCII test data submission,~ VERSION,GAN
+UWI.,CHAR 20 ,UNIQUE WELL ID,uwi must be valid and exist on aer database.,Unique Well Identifier - Bottomhole location.,~ WELL INFORMATION,GAN
+DRILLEG.,NUMB 2 ,DRILLING LEG,"must be 01, 02, 03…09 (cannot be 0 or null)","Drilling Leg (Event or Occurrence). Together with the UWI, this is to help define the bottom of the specific drill hole.",~ WELL INFORMATION,GAN
+WLIC.,CHAR 9,AER WELL LICENSE NUMBER,well license number must match aer license number for uwi ,AER Well License Number,~ WELL INFORMATION,GAN
+FORM.,CHAR 20 ,FORMATION NAME,,Name of the geological formation/zone,~ WELL INFORMATION,GAN
+WSFL.,NUMB 2,WELL FLUID TYPE AT TEST DATE,"must have a valid aer fluid code =  (01) oil, (02) gas, (06) water, or (17) crude bitumen","Type of Dominant Fluid Production/Pay (i.e. oil, gas, water)",~ WELL INFORMATION,GAN
+LABCO.,CHAR 60,LABORATORY NAME,,Company name conducting analysis,~ TEST DATA,GAN
+TTOPL.M,"NUMB 6,2",TEST/PROD. INTERVAL TOP M KB (LOG),[ttopl] (interval top - log) must be > 0.0 and < [tbasl] (interval base - log),"Top of tested or producing interval - in log depth, measured mKB",~ TEST DATA,GAN
+TBASL.M,"NUMB 6,2",TEST/PROD. INTERVAL BASE M KB (LOG),[tbasl] (interval base - log) must be > 0.0 and => [ttopl] (interval top - log)  and cannot be greater than total well depth.,"Base of tested or producing interval - in log depth, measured mKB",~ TEST DATA,GAN
+HYDLP.,CHAR 1,HYDROCARBON LIQUIDS PRODUCTION ,"must be = (y)es or (n)o.  if [hydlp] (hydrocarbon liquid production) = (y)es, then [dtcl] (data table - condensate / liquid analysis)  can not be null.",Flag indicating measurable liquid production (Y)es or (N)o,~ TEST DATA,GAN
+STYP.,CHAR 1,SAMPLE TYPE,"must be a (g)as, (c)ondensate, (b)oth, or (r)ecombination",Type of Sample reported.,~ TEST DATA,GAN
+GLR.M3/M3,"NUMB 7,0",GAS LIQUID RATIO,"mandatory, if [styp] (sample type)  = (r)ecombination","Calculated ratio, of separator gas and separator liquid at the time of sampling.",~ TEST DATA,GAN
+DSTLOC.,CHAR 1,DST SAMPLE LOCATION,"if [fs-spnt] (first stage - sample gathering point code) = (50) then [dstloc] dst sample location) must be (t)op, (m)iddle, or (b)ottom",,~ TEST DATA,GAN
+GANC.,CHAR 240,COMMENT ON SAMPLE,optional,General Free form Comment (regarding Sample or Analytical Procedures).,~ TEST DATA,GAN
+FS-SDAT.DAY,YYYY MM DD,DATE SAMPLED,must be >= spud date and <= abandoned date and <= submission date,Date First Stage Separator sample was gathered,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+FS-SPNT.,NUMB 2,SAMPLE GATHERING POINT CODE,must be valid aer sample point code (see footnote).,Location as to where First Stage Separator Hydrocarbon Sample was gathered,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+FS-SPNTN.,CHAR 50,DESCRIPTION OF SAMPLE POINT,can not be null,Laboratories unique name describing location of First Stage Separator Sample Gathering Point,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+FS-SPRES.KPAA,"NUMB 8,2",SAMPLE PRESSURE,"mandatory, if [fs-sdat] (date sampled) > 2004 09 30. can not be zero",First Stage Separator Pressure as sampled (in field) - kPaa,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+FS-STEMP.DEGC,"NUMB 5,2",SAMPLE TEMPERATURE,"mandatory, if [fs-sdat] (date sampled) > 2004 09 30. can  be zero",First Stage Separator Temperature as sampled (in field) - DegC,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+FS-RPRES.KPAA,"NUMB 8,2",RECEIVED PRESSURE,can not be zero,First Stage Separator Pressure as received (in Lab) -kPaa,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+FS-RTEMP.DEGC,"NUMB 5,2",RECEIVED TEMPERATURE,can be zero,First Stage Separator Temperature as received (in Lab) - DegC,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+FS-ADAT.DAY,YYYY MM DD,DATE ANALYZED,must be >= [sdat] (date sampled) and <= submission date,Date in which First Stage Separator sample was analyzed,~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+COMPCOM.,CHAR 11,Composition Components,,,~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+MOLG.FRAC,"NUMB 5,4",Molal Fraction Air Free,"mandatory must total 1.0000, plus or minus 0.001 for rounding. can = zero",Representative Mole Fractions - Air Free as Received,~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+MOLAGF.FRAC,"NUMB 5,4",Molal Fraction Acid Gas/Air Free,"mandatory must total 1.0000, plus or minus 0.001 for rounding. can = zero",Representative Mole Fractions - Air Free/Acid Gas Free ,~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+LIQVOL.ML/M3,"NUMB 5,1",Liquid Volume ml/m3,,Liquid Volumes ml/m3 - Air Free,~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS,GAN
+LFNUM.,CHAR 25,LABORATORY FILE NUMBER,can not be zero,Identification number,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+IDENT.,CHAR 12,CONTAINER IDENTITY,can not be zero,Identification code of container,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+RELDEN.,"NUMB 4,3",GAS RELATIVE DENSITY,can not be zero,Relative Density of First Stage Gas,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+TSMW.,"NUMB 3,1",CALC MOLE WEIGHT OF TOTAL SAMPLE,can not be zero,,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+GHV.MJ/M3,"NUMB 4,2",CALC GROSS HEAT VALUE MOISTURE FREE,can not be zero,,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+GHVAGF.MJ/M3,"NUMB 4,2",CALC GROSS HEAT VALUE MOISTURE & ACID GAS FREE,can not be zero,,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+PPVP.KPAA,"NUMB 8,2",CALC C5+ VAPOUR PRESSURE (KPAA),optional,,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+FS-PPC.KPAA,"NUMB 8,2",CALC PSEUDO CRITICAL PRESSURE AS SAMPLED,can not be zero,First Stage Separator - PPC (kPaa),~ GAS ANALYSIS - DATA PROPERTIES,GAN
+FS-PTC.DEGK,"NUMB 5,2",CALC PSEUDO CRITICAL TEMPERATURE AS SAMPLED (DegK),can not be zero,First Stage Separator - PTC (Degrees Kelvin),~ GAS ANALYSIS - DATA PROPERTIES,GAN
+FS-PPCAGF.KPAA,"NUMB 8,2",CALC PSEUDO CRITICAL PRESSURE ACID GAS FREE,can not be zero,First Stage Separator - PPC - Acid Gas Free (kPaa),~ GAS ANALYSIS - DATA PROPERTIES,GAN
+FS-PTCAGF.DEGK,"NUMB 5,2",CALC PSEUDO CRITICAL TEMPERATURE ACID GAS FREE  (DegK),can not be zero,First Stage Separator - PTC - Acid Gas Free (Degrees Kelvin),~ GAS ANALYSIS - DATA PROPERTIES,GAN
+H2SLC.,CHAR 1,LOCATION OF H2S MEASUREMENT,"mandatory, must indicate location of measurement (f)ield, (l)ab or (b)oth.",Location of H2S measurement. 1 PPM = (0.000001 MOL FRAC) or (0.0001 MOL %),~ GAS ANALYSIS - DATA PROPERTIES,GAN
+H2SMT.,CHAR 1,METHOD OF FIELD ANALYSIS ,"mandatory, if [h2slc] (location of h2s measurement) = (f)ield or (b)oth. [h2smt] must = (t)utwieler, (l)itmus, (c)hromatograph, (o)ther, (s)tain tube or (n)ot measured. must be null if [h2slc] = (l)ab.",Method of H2S detection.,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+FLDH2S.PPM,"NUMB 7,1",FIELD GAS H2S (PPM),"mandatory, if [h2slc] (location of h2s measurement) = (f)ield or (b)oth and [h2smt] (method of field analysis) is not null, can be zero.  if [h2smt] = (n), [fldh2s] must be zero. must be null if [h2slc] = (l)ab.",H2S concentration measured in the field in parts per million. ,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+LABH2S.FRAC,"NUMB 5,4",LABORATORY H2S ANALYSIS,"mandatory, if [h2slc] (location of h2s measurement) = (l)ab or (b)oth.  can be zero.",H2S fraction measured in the lab.,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+C7+DN.,"NUMB 4,1",DENSITY OF C7+ FRACTION,"mandatory, if [fs-c7+.frac] (heptane plus) >0.0000, else must be null optional",,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+C7+MW.,"NUMB 3,1",MOLE WEIGHT C7+ FRACTION,"mandatory, if [fs-c7+.frac] (heptane plus) >0.0000, else must be null optional",,~ GAS ANALYSIS - DATA PROPERTIES,GAN
+SS-SDAT.DAY,YYYY MM DD,DATE SAMPLED,must be >= spud date and <= abandoned date and <= submission date,Date Second Stage Separator sample was gathered,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-SPNT.,NUMB 2,SAMPLE GATHERING POINT CODE,must be valid aer sample point code (see footnote).,Location as to where Second Stage Separator Hydrocarbon Sample was gathered,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-SPNTN.,CHAR 50,DESCRIPTION OF SAMPLE POINT,can not be null,Laboratories unique name describing location of Second Stage Separator Sample Gathering Point,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-SPRES.KPAA,"NUMB 8,2",SAMPLE PRESSURE,"mandatory, if [ss-sdat] (date sampled) > 2004 09 30. can not be zero",Second Stage Separator Pressure as sampled (in field) - kPaa,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-STEMP.DEGC,"NUMB 5,2",SAMPLE TEMPERATURE,"mandatory, if [ss-sdat] (date sampled) > 2004 09 30. can be zero",Second  Stage Separator Temperature as sampled (in field) - DegC,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-RPRES.KPAA,"NUMB 8,2",RECEIVED PRESSURE,can not be zero,Second  Stage Separator Pressure as received (in Lab) - kPaa,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-RTEMP.DEGC,"NUMB 5,2",RECEIVED TEMPERATURE,can be zero,Second  Stage Separator Temperature as received (in Lab) - DegC,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-ADAT.DAY,YYYY MM DD,DATE ANALYZED,must be >= [ss-sdat] (date sampled) and <= submission date,Date in which Second Stage Separator sample was analyzed,~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-H2S.FRAC,"NUMB 5,4",HYDROGEN SULPHIDE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-CO2.FRAC,"NUMB 5,4",CARBON DIOXIDE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-N2.FRAC,"NUMB 5,4",NITROGEN,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-H2.FRAC,"NUMB 5,4",HYDROGEN,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-HE.FRAC,"NUMB 5,4",HELIUM,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-C1.FRAC,"NUMB 5,4",METHANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-C2.FRAC,"NUMB 5,4",ETHANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-C3.FRAC,"NUMB 5,4",PROPANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-IC4.FRAC,"NUMB 5,4",ISO-BUTANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-NC4.FRAC,"NUMB 5,4",N-BUTANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-IC5.FRAC,"NUMB 5,4",ISO-PENTANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-NC5.FRAC,"NUMB 5,4",N-PENTANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-C6.FRAC,"NUMB 5,4",HEXANE,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+SS-C7+.FRAC,"NUMB 5,4",HEPTANE PLUS,"mandatory, if [sepcond] (separator conditions) = (b)oth and [styp] (sample type) = (r)ecombination, then cannot be null.",,~ SECOND STAGE SEPARATOR - GAS ANALYSIS,GAN
+CL-SDAT.DAY,YYYY MM DD,DATE SAMPLED,must be >= spud date and <= abandoned date and <= submission date,Date in which Condensate / Liquid sample was gathered,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+CL-SPNT.,NUMB 2,SAMPLE GATHERING POINT CODE,must be valid aer sample point code (see footnote).,Location as to where Condensate / Liquid  Sample was gathered,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+CL-SPNTN.,CHAR 50,DESCRIPTION OF SAMPLE POINT,can not be null,Laboratories unique name describing location of Condensate / Liquid Sample Gathering Point,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+CL-SPRES.KPAA,"NUMB 8,2",SAMPLE PRESSURE,"mandatory, if [ss-sdat] (date sampled) > 2004 09 30. can not be zero",Condensate / Liquid Pressure as sampled (in field) - kPaa,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+CL-STEMP.DEGC,"NUMB 5,2",SAMPLE TEMPERATURE,"mandatory, if [ss-sdat] (date sampled) > 2004 09 30. can be zero",Condensate / Liquid Temperature as sampled (in field) - DegC,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+CL-RPRES.KPAA,"NUMB 8,2",RECEIVED PRESSURE,"optional, if present can not be zero",Condensate / Liquid Pressure as received (in Lab) - kPaa,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+CL-RTEMP.DEGC,"NUMB 5,2",RECEIVED TEMPERATURE,"optional, can be zero.",Condensate / Liquid Temperature as received (in Lab) - DegC,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+CL-ADAT.DAY,YYYY MM DD,DATE ANALYZED,must be >= sdat (sample date) and <= submission date,Date in which Condensate / Liquid  sample was analyzed,~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS,GAN
+COMPCOM.,CHAR 11,Composition Components,,,~ DATA TABLE - CONDENSATE / LIQUID ANALYSIS,GAN
+MOLC.FRAC,"NUMB 5,4",Molal Fraction ,"mandatory must total 1.0000, plus or minus 0.001 for rounding. can = zero, can be null",Representative Mole Fractions - Air Free as Received,~ DATA TABLE - CONDENSATE / LIQUID ANALYSIS,GAN
+MASS.FRAC,"NUMB 5,4",Mass Fraction ,"mandatory must total 1.0000, plus or minus 0.001 for rounding. can = zero, can be null",Representative Mass Fractions - Air Free as Received,~ DATA TABLE - CONDENSATE / LIQUID ANALYSIS,GAN
+VOL.FRAC,"NUMB 5,4",Volume Fraction,"mandatory must total 1.0000, plus or minus 0.001 for rounding. can = zero, can be null",Representative Volume Fractions - Air Free as Received,~ DATA TABLE - CONDENSATE / LIQUID ANALYSIS,GAN
+LFNUM.,CHAR 25,LABORATORY FILE NUMBER,,Identification number,~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES,GAN
+IDENT.,CHAR 12,CONTAINER IDENTITY,,Identification code of container,~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES,GAN
+H2SLP.,CHAR 1,HYDROGEN SULPHIDE INDICATOR - CONDENSATE/LIQUID,"mandatory, must be (n)one, (t)race or (m)easured. if [h2slp] (hydrogen sulphide indicator) = (n)one or (t)race, then [cl-h2s] (condensate / liquid analysis - hydrogen sulphide) must = 0.000, else must be > 0.00",Measured H2S component  = >100 PPM (0.0001 MOL FRAC) or (0.01 MOL %).,~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES,GAN
+LH2S.PPM,"NUMB 3,1",LIQUID H2S PPM,can be zero. can be null.,"H2S in Parts per Million (<= 99.9, or 0.0000999 MOL FRAC). Note: Any Indication of Trace Liquid H2S, if not sampled, should be recorded in ~Test Data [GANC] (Comment on Sample).",~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES,GAN
+LIQRDN.,"NUMB 4, 3",CALC REL DENSITY OF TOTAL SAMPLE @ 15 DegC,must be < 1,Calculated Relative Density of Condensate / Liquid Sample,~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES,GAN
+LIQRMW.,"NUMB 4,1",CALC REL MOLE MASS OF TOTAL SAMPLE @ 15 DegC,,Calculated Relative Molar Mass of Condensate / Liquid Sample,~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES,GAN
+LIQCOMP.,CHAR 11,Liquid Components,,,~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION,GAN
+MOLL.FRAC,"NUMB 5,4",Molal Fraction ,"optional, if reported must be <1, can be zero",,~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION,GAN
+MASS.FRAC,"NUMB 5,4",Mass Fraction ,"optional, if reported must be <1, can be zero",,~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION,GAN
+VOL.FRAC,"NUMB 5,4",Volume Fraction,"optional, if reported must be <1, can be zero",,~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION,GAN
+RDLIQ.,"NUMB 4,3",Relative Density of Liquid Components,"optional, if reported must be <1, can not be zero",,~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION,GAN
+RELMM.,NUMB 3,Relative Molecular Mass ,"optional, if reported valid range = 80 to 250",,~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION,GAN
+SEPCOND.,CHAR 1,SEPARATOR CONDITIONS,"if [styp] (sample type) = (r)ecombination, then must be (f)irst stage separator, or (b)oth, else null",(B)oth = First & Second Stage Separator Samples reported,~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES,GAN
+FS-GAS.E3M3/D,"NUMB 13,4",FIRST STAGE GAS RATE ,"if [styp] (sample type) = (r)ecombination and [sepcond] (separator conditions)  = (f)irst or (b)oth, then cannot be null. ",103m3/d,~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES,GAN
+SS-GAS.E3M3/D,"NUMB 13,4",SECOND STAGE GAS RATE ,"if [styp] (sample type) = (r)ecombination and [sepcond] (separator conditions)  = (b)oth, then cannot be null. ",103m3/d,~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES,GAN
+LIQRAT.M3/D,"NUMB 13,4",LIQUID RATE,"mandatory, if styp= 'r' ",The separator liquid rate used for the recombination.,~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES,GAN
+LIQGPT.,CHAR 1,LIQUID GATHERING POINT,"if [styp] (sample type) = (r)ecombination, then [liqgpt] must be (f)irst stage separator, (s)econd stage separator or stock (t)ank.",,~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES,GAN
+LIQMM.,"NUMB 4,1",LIQUID MOLECULAR MASS g/mol,"mandatory, if  [styp] (sample type) = (r)ecombination",,~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES,GAN
+LIQRDN.,"NUMB 4, 3",DENSITY OF LIQUID kg/m3,"mandatory, if  [styp] (sample type) = (r)ecombination",DENSITY OF LIQUID kg/m3 AT MEASURED CONDITIONS,~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES,GAN
+R-H2S.FRAC,"NUMB 5,4",CALC HYDROGEN SULPHIDE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-CO2.FRAC,"NUMB 5,4",CALC CARBON DIOXIDE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-N2.FRAC,"NUMB 5,4",CALC NITROGEN,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-H2.FRAC,"NUMB 5,4",CALC HYDROGEN,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-HE.FRAC,"NUMB 5,4",CALC HELIUM,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-C1.FRAC,"NUMB 5,4",CALC METHANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-C2.FRAC,"NUMB 5,4",CALC ETHANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-C3.FRAC,"NUMB 5,4",CALC PROPANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-IC4.FRAC,"NUMB 5,4",CALC ISO-BUTANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-NC4.FRAC,"NUMB 5,4",CALC N-BUTANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-IC5.FRAC,"NUMB 5,4",CALC ISO-PENTANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-NC5.FRAC,"NUMB 5,4",CALC N-PENTANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-C6.FRAC,"NUMB 5,4",CALC HEXANE,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+R-C7+.FRAC,"NUMB 5,4",CALC SUM OF GREATER THAN C6,"if [styp] (sample type) = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS COMPOSITION,GAN
+RGHV.MJ/M3,"NUMB 4,2",CALC GROSS HEAT VALUE MOISTURE FREE,"if [styp] (sample type)  = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS PROPERTIES,GAN
+RGHVA.MJ/M3,"NUMB 4,2",CALC GROSS HEAT VALUE MOISTURE & ACID GAS FREE,"if [styp] (sample type)  = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS PROPERTIES,GAN
+RECOFLO.E3M3/D,"NUMB 13,4",RECOMBINED FLOWRATE 103M3/D,"if [styp] (sample type)  = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS PROPERTIES,GAN
+RDGAS.,"NUMB 5,4",RELATIVE DENSITY,"if [styp] (sample type)  = (r)ecombination, then cannot be null.",,~ RECOMBINED GAS PROPERTIES,GAN
+R-PPC.KPAA,"NUMB 8,2",PSEUDO CRITICAL PRESSURE,optional.,PPC of Recombined Sample - (kPaa),~ RECOMBINED GAS PROPERTIES,GAN
+R-PTC.DEGK,"NUMB 5,2",PSEUDO CRITICAL TEMPERATURE,optional.,PTC of Recombined Sample - (Degree's Kelvin),~ RECOMBINED GAS PROPERTIES,GAN
+PASTYPE.,CHAR 7,DIGITAL DATA - GRADIENT TEST DATA ,pas-grd,"Static Pressure Test, format.  This file is for the reporting of both ""Static"" Pressure measurements (Gradients, Acoustic Well Sounders, or Deadweight Tester) and ""Flowing"" Gradient well test data.",~ VERSION,GRD
+UNIT.,CHAR 1,UNITS FLAG,(m)etric,Metric Units for AER submission,~ VERSION,GRD
+VERS.,"NUMB 5,2",AER DIGITAL WELL TEST DATA,4,Current AER version for ASCII test data submission,~ VERSION,GRD
+UWI.,CHAR 20 ,UNIQUE WELL ID,uwi must be valid and exist on aer database.,Unique Well Identifier - Bottomhole location.,~ WELL INFORMATION,GRD
+DRILLEG.,NUMB 2 ,DRILLING LEG,"must be 01, 02, 03…09 (cannot be 0 or null)","Drilling Leg (Event or Occurrence). Together with the UWI, this is to help define the bottom of the specific drill hole.",~ WELL INFORMATION,GRD
+WLIC.,CHAR 9,AER WELL LICENSE NUMBER,well license number must match aer license number for uwi ,AER Well License Number,~ WELL INFORMATION,GRD
+FORM.,CHAR 20 ,FORMATION NAME,,Name of the geological formation/zone,~ WELL INFORMATION,GRD
+WSFL.,NUMB 2,WELL FLUID TYPE AT TEST DATE,"must have a valid aer fluid code =  (01) oil, (02) gas, (06) water, or (17) crude bitumen","Type of Dominant Fluid Production/Pay (i.e. oil, gas, water)",~ WELL INFORMATION,GRD
+WTYP.,CHAR 1,WELL TYPE INDICATOR ,"must be (v)ertical, (d)eviated or (h)orizontal","Flag indicating (V)ertical, (D)eviated, or (H)orizontal Wellbore",~ WELL INFORMATION,GRD
+PACKER.,CHAR 1,PACKER INDICATOR FLAG,must = (y)es or (n)o.,"Flag indicating presence of packer (Y)es, (N)o",~ WELL INFORMATION,GRD
+TULD.,CHAR 1,TUBING IN WELL,must = (y)es or (n)o.,Flag indicating Tubing in well (Y) or (N),~ WELL INFORMATION,GRD
+AFLO.,CHAR 1,FLOW PATH,"must = (a)nnular, (c)asing, (t)ubing, or (b)oth casing and tubing.","Flag indicating flow path (A)nnular, (C)asing, (T)ubing, or (B)oth casing and tubing",~ WELL INFORMATION,GRD
+TUBS.MM,"NUMB 4,1",INSIDE DIAMETER OF PRODUCTION TUBING,"optional, if present must be > 0.00",Inside diameter of production tubing (IF TULD=Y),~ WELL INFORMATION,GRD
+PCID.MM,"NUMB 4,1",INSIDE DIAMETER OF PRODUCTION CASING,"optional, if present must be > 0.00 and must be > [tubs] and [ptod]",Inside diameter of production casing,~ WELL INFORMATION,GRD
+PTOD.MM,"NUMB 4,1",OUTSIDE DIAMETER OF PRODUCTION TUBING ,"optional, if present must be > 0.00 and must be > [tubs]",Outside diameter of production tubing,~ WELL INFORMATION,GRD
+PRPS.,CHAR 1,TEST PURPOSE ,"must be (i)nitial test, (a)nnual pressure, or (o)ther","(I)nitial or (A)nnual for fulfillment of Guide 40, Regulatory Testing Requirements. (O)ther indicates test conducted strictly for Licensee's own purpose, and which may not comply with a number of testing restrictions Please Note: Subsequent tests captured for Licensees own needs, but considered representative of the reservoirs (i.e. Stable and/or Interpreted), should be submitted as (A)nnual.",~ TEST DATA,GRD
+SERCO.,CHAR 5,SERVICE COMPANY CODE,,Company conducting test (see AER Website),~ TEST DATA,GRD
+TTYP.,CHAR 2 ,TEST TYPE CODE,"must be valid aer pas-grd well pressure test code (see footnote).  if [ttyp] (test type indicator) = 13, 23, or 33 then [prps] (test purpose indicator) must = (o)ther;  if [ttyp] = 10, [prps] cannot = (i)nitial.",,~ TEST DATA,GRD
+H2SIND.,CHAR 1,H2S INDICATOR,must = (y)es or (n)one.,Flag indicating presence of H2S,~ TEST DATA,GRD
+AWSVAL.,CHAR 1,AWS VALIDATION,"mandatory. if [ttyp] (test type indicator) = 10 and [prps] (test purpose indicator) = (a)nnual, then [awsval] must = (y)es.  if [ttyp] = 10 and [prps] = (o)ther, then [awsval] can be (y)es, (n)o, or null. if [ttyp] <> 10, [awsval] must be null.","Flag indicating whether Verification of Acoustic Method was undertaken and submitted (in this or previous test/image file - for this well), in accordance with AER Guide 40.",~ TEST DATA,GRD
+TTOPL.M,"NUMB 6,2",TEST/PROD. INTERVAL TOP M KB (LOG),[ttopl] (interval top - log) must be > 0.0 and < [tbasl] (interval base - log),"Top of tested or producing interval - in log depth, measured mKB.",~ TEST DATA,GRD
+TBASL.M,"NUMB 6,2",TEST/PROD. INTERVAL BASE M KB (LOG),[tbasl] (interval base - log) must be > 0.0 and => [ttopl] (interval top - log)  and cannot be greater than total well depth.,"Base of tested or producing interval - in log depth, measured mKB",~ TEST DATA,GRD
+TTOPT.M,"NUMB 6,2",TEST/PROD. INTERVAL TOP M KB (TVD),"if [wtyp] (well type indicator) = (d)eviated or (h)orizontal,  then [ttopt] (interval top - tvd) must be <  [ttopl] (interval top - log), else if  [wtyp] = (v)ertical, then [ttopt] must = [ttopl]","Top of tested or producing interval - in true vertical depth, calculated mKB",~ TEST DATA,GRD
+TBAST.M,"NUMB 6,2",TEST/PROD. INTERVAL BASE M KB (TVD),"if [wtyp] (well type indicator) = (d)eviated or (h)orizontal,  then [tbast] (interval base - tvd) must be <  [tbasl] (interval base - log), else if  [wtyp] = (v)ertical, then [tbast] must = [tbasl]","Base of tested or producing interval  in true vertical depth, calculated mKB",~ TEST DATA,GRD
+TISI.DAY/HR,YYYY MM DD HHHH,TIME/DATE WELL SHUT-IN,must be >= spud date but < [ftdt] (final test date and time) and the submission date,Date/time well shut-in for final BU/FO,~ TEST DATA,GRD
+FTDT.DAY/HR,YYYY MM DD HHHH,FINAL TEST DATE/TIME,must be >= spud date and <= abandoned date and <= submission date,Date/time test ended,~ TEST DATA,GRD
+TUPS.KPAA,"NUMB 8,2",INITIAL TUBING PRESSURE,"mandatory if [aflo] (flow path) = (t)ubing or (b)oth, and [ttyp] (test type indicator)  = (03) or (13), else can be null.",Tubing pressure at start of test (kPaa),~ TEST DATA,GRD
+CSPS.KPAA,"NUMB 8,2",INITIAL CASING PRESSURE,"mandatory if [aflo] (flow path) = (a)nnular, (c)asing or (b)oth, and [ttyp] (test type indicator)  = (03) or (13), else can be null ",Casing pressure at start of test (kPaa),~ TEST DATA,GRD
+FTUPS.KPAA,"NUMB 8,2",FINAL TUBING PRESSURE,"mandatory if [aflo] (flow path) = (t)ubing or (b)oth, and [ttyp] (test type indicator)  = (03) or (13), else can be null. ",Tubing pressure at end of test (kPaa),~ TEST DATA,GRD
+FCSPS.KPAA,"NUMB 8,2",FINAL CASING PRESSURE,"mandatory if [aflo] (flow path) = (a)nnular, (c)asing or (b)oth, and [ttyp] (test type indicator)  = (03) or (13), else can be null ",Casing pressure at end of test (kPaa),~ TEST DATA,GRD
+TSUR.DEGC,"NUMB 5,2",SURFACE TEMPERATURE,"mandatory, if [ttyp] (test type indicator) = (10), (23) or (33)",Temperature measured at wellhead during operations (DegC),~ TEST DATA,GRD
+QGAS.E3M3/D,"NUMB 13,4",GAS PRODUCTION RATE PRIOR TO TEST,"mandatory, if [ttyp] (test type indicator) = (10). can be zero. can be negative, if an injection well.",,~ TEST DATA,GRD
+QOIL.M3/D,"NUMB 13,4",OIL PRODUCTION RATE PRIOR TO TEST,"mandatory, if [ttyp] (test type indicator) = (10). can be zero. can be negative, if an injection well.",,~ TEST DATA,GRD
+QWTR.M3/D,"NUMB 13,4",WATER PRODUCTION RATE PRIOR TO TEST,"mandatory, if [ttyp] (test type indicator) = (10). can be zero. can be negative, if an injection well.",,~ TEST DATA,GRD
+GSERU.,CHAR 20,GAUGE SERIAL NUMBER USED IN SUMMARY,"mandatory, must be found in 1 raw data table",Serial number of gauge used to represent reservoir,~ PRESSURE RESULTS - SUMMARY,GRD
+SDGAL.M,"NUMB 10,5",REPRESENTATIVE STOP DEPTH M CF (LOG),"mandatory, if [ttyp] (test type indicator) = 03","Closest Stop/Run Depth to MPP (Representative of Reservoir),  (mCF Log)",~ PRESSURE RESULTS - SUMMARY,GRD
+SDGAT.M,"NUMB 10,5",REPRESENTATIVE STOP DEPTH M CF (TVD),"mandatory, if [ttyp] (test type indicator) = 03 and  [wtyp] (well type indicator) = (d)eviated or (h)orizontal, else must be null.",Gauge/Recorder depth (Calculated/Adjusted Depth) (in mCF TVD),~ PRESSURE RESULTS - SUMMARY,GRD
+PRGA.KPAA,"NUMB 8,2",PRESSURE AT STOP DEPTH KPAA,"mandatory, if [ttyp] (test type indicator) = 03",Representative Pressure at SDGAL,~ PRESSURE RESULTS - SUMMARY,GRD
+PRCOR.KPA,"NUMB 8,2",PRESSURE CORRECTION,"mandatory, if [ttyp] (test type indicator) = 03. can be zero. if [sdgal] is < [tbasl] or > [ttopl], then [prcor] can not be zero.",Pressure Differential from run depth to MPP used; negative values if run below MPP (kPa),~ PRESSURE RESULTS - SUMMARY,GRD
+PRGC.,CHAR 240,COMMENT ON PRESSURE,optional,"Freeform comment of Pressure - (i.e. comparison to trend, offsets, shut-in time etc.) Data updates AER Pressure Summary Database.",~ PRESSURE RESULTS - SUMMARY,GRD
+PLIND.,CHAR 1,PRIMARY LIQUID TYPE INDICATOR ,"mandatory, if [wsfl] (well fluid type at test date) = (01), (06) or (17).  must = (o)il, (w)ater, (c)rude bitumen, (e)mulsion or o(t)her. if present [plind] (primary liquid type indicator) <> [slind] (secondary liquid type indicator). ",Provide type of liquid encountered,~ PRESSURE RESULTS - SUMMARY,GRD
+SLIND.,CHAR 1,SECONDARY LIQUID TYPE  INDICATOR,"mandatory, if [slgr] (secondary liquid gradient) > 0.00, otherwise it is optional. if present, must = (o)il, (w)ater, (c)rude bitumen, (e)mulsion, o(t)her, else must be null.  if present, [plind] (primary liquid type indicator) <> [slind] (secondary liquid type indicator).",Must provide secondary type of liquid if encountered,~ PRESSURE RESULTS - SUMMARY,GRD
+GRGAS.KPA/M,"NUMB 5,3",GAS GRADIENT USED TO CORRECT TO LIQUID LEVEL OR LOG MPP,"mandatory, if [prps] (test purpose indicator) not = (o)ther; if [llvl] (liquid level - log) = 0, then [grgas] (gas gradient) can be zero otherwise it must be > 0.0001 and < 5.999",Estimated gradient of gas in wellbore (kPa/m),~ PRESSURE RESULTS - SUMMARY,GRD
+GRLIQ.KPA/M,"NUMB 5,3",LIQUID GRADIENT USED TO CORRECT TO LOG MPP,"mandatory, if [prps] (test purpose indicator) not = (o)ther; if [plind] (primary liquid type indicator) present [grliq] (liquid gradient used to correct to mpp) is mandatory; if [plind]  = (o)il or (e)mulsion then [grliq]  must be > 1.5 and < 15.999; if [plind]  = (w)ater then [grliq]  must be > 9.500 and < 15.999",(kPa/m). ,~ PRESSURE RESULTS - SUMMARY,GRD
+PLGR.KPA/M,"NUMB 5,3",PRIMARY LIQUID GRADIENT (LOG),"if [plind] (primary liquid type indicator) present, [plgr] (primary liquid gradient) is mandatory",,~ PRESSURE RESULTS - SUMMARY,GRD
+SLGR.KPA/M,"NUMB 5,3",SECONDARY LIQUID GRADIENT (LOG),"if [slind] (secondary liquid type indicator) present, [slgr] (secondary liquid gradient) is mandatory",,~ PRESSURE RESULTS - SUMMARY,GRD
+PSUR.KPAA,"NUMB 8,2",SURFACE PRESSURE,"mandatory, if [ttyp] (test type indicator) = 10, 23 or 33",Corresponding casing/surface pressure at that time (kPaa),~ PRESSURE RESULTS - SUMMARY,GRD
+METHC.,CHAR 240,METHOD OF ACOUSTIC/DEAD WEIGHT TESTER EXTRAPOLATION COMMENT,"mandatory, if [ttyp] (test type indicator) = 10 or 33","Description for method of Acoustic / DWT calculation, in accordance with AER Guide 3 and Guide 5.",~ PRESSURE RESULTS - SUMMARY,GRD
+LLVL.M,"NUMB 10,5",LIQUID LEVEL M CF (LOG),"mandatory, if [plind] (primary liquid type indicator) present, can be zero. must be null, if both [plind] and [slind] (secondary liquid type indicator) are null.","Calculated Length of Gas Column, as determined by wireline or interpreted by an Acoustic Shot - in LOG/measured depth (mCF). Note: For dry gas wells, Liquid Level (or Length of Gas Column) is to be reported equal to MPP or Null. A depth of zero will be interpreted as ""Liquid to Surface"".",~ PRESSURE RESULTS - SUMMARY,GRD
+LLVT.M,"NUMB 10,5",LIQUID LEVEL M CF (TVD),"mandatory, if [plind] (primary liquid type indicator) present and if [wtyp] (well type indicator) = (d)eviated or (h)orizontal. can be zero. must be null, if both [plind] and [slind] (secondary liquid type indicator) are null.","Calculated Length of Gas Column (or liquid level) for each shot (TVD). As determined by wireline or interpreted by an Acoustic - in TVD depth, calculated mCF. Note: See [LLVL]",~ PRESSURE RESULTS - SUMMARY,GRD
+PMPP.KPAA,"NUMB 8,2",CALCULATED PRESSURE CORRECTED TO MPP (LOG),mandatory. can not = 0,"Calculated pressure to mid-point of tested or producing interval - in log depth, measured mKB",~ PRESSURE RESULTS - SUMMARY,GRD
+TRES.DEGC,"NUMB 5,2",RESERVOIR TEMPERATURE,,Reservoir temperature (DegC),~ PRESSURE RESULTS - SUMMARY,GRD
+DPTS.,CHAR 1,ANNULAR DEPRESSION TEST INDICATOR,"mandatory, if [ttyp] (test type indicator) = 10 and [prps] (test purpose indicator) = (a)nnual. must be either (y)es or (n)o otherwise null.   ","Flag indicating whether or not an Annular Fluid/Foam Depression test was performed, in accordance with AER Guide 40. If DPTS = (Y). Data/information must be included within Image Attachment.",~ PRESSURE RESULTS - SUMMARY,GRD
+SDGAL.M,"NUMB 10,5",STOP DEPTH M CF (LOG),"mandatory, if [ttyp] (test type indicator) = (03) or (13). at least 1 row in table must report a value not = zero",Gauge/Recorder depth (Measured Depth/LOG) in mCF,~ DATA TABLE - GRADIENT,GRD
+SDGAT.M,"NUMB 10,5",STOP DEPTH M CF (TVD),"mandatory, if [ttyp] (test type indicator) = (03) or (13) mandatory and if [wtyp] (well type indicator) = (d)eviated or (h)orizontal , else must be null.",Gauge/Recorder depth (Calculated Depth/TVD) in mCF,~ DATA TABLE - GRADIENT,GRD
+PRGA.KPAA,"NUMB 8,2",STOP PRESSURE KPAA,"mandatory, if [ttyp] (test type indicator) = (03) or (13)",Pressure measured at stop depth,~ DATA TABLE - GRADIENT,GRD
+GRSDL.KPA/M,"NUMB 5,3",CALCULATED GRADIENT (LOG),"mandatory, if [ttyp] (test type indicator) = (03) or (13).  at least 1 row in table must report a value not = zero",Gradient calculated at stop depth,~ DATA TABLE - GRADIENT,GRD
+GRSDT.KPA/M,"NUMB 5,3",CALCULATED GRADIENT (TVD),"mandatory, if [ttyp] (test type indicator) = (03) or (13) mandatory and if [wtyp] (well type indicator) = (d)eviated or (h)orizontal, else must be null.",,~ DATA TABLE - GRADIENT,GRD
+TGA.DEGC,"NUMB 5,2",STOP TEMPERATURE,"mandatory, if [ttyp] (test type indicator) = (03) or (13). at least 1 row in table must report a value not = zero",Gauge temperature at each stop depth,~ DATA TABLE - GRADIENT,GRD
+GSER.,CHAR 20,GAUGE SERIAL NUMBER ,one gauge must match [gseru] (gauge serial number used in summary),Serial or Reference number of Gauge/Recorder. Note: Number required for the ability to audit gauge data.,~ HEADER DATA - GAUGE (n),GRD
+GTYPMM.,CHAR 90,GAUGE TYPE / MANUFACTURER / MODEL,"gauge type, manufacturer and model must be separated with slashes.","Type of gauge used (mechanical, electronic, model), name of manufacturer and model ",~ HEADER DATA - GAUGE (n),GRD
+GRNG.KPAA,"NUMB 8,2",MAXIMUM RECORDER RANGE KPAA,,Full scale pressure range,~ HEADER DATA - GAUGE (n),GRD
+GCAL.DAY,YYYY MM DD,DATE OF LAST CALIBRATION,must be < = [ftdt] (final test date/time),Date gauge last calibrated,~ HEADER DATA - GAUGE (n),GRD
+GRES.,"NUMB 6,5",RESOLUTION % OF FULL-SCALE,,,~ HEADER DATA - GAUGE (n),GRD
+GACC.,"NUMB 6,5",ACCURACY % OF FULL-SCALE ,,,~ HEADER DATA - GAUGE (n),GRD
+GONB.DAY/HR/SS,YYYY MM DD HHHH:SS,DATE/TIME GAUGE ON BOTTOM,"mandatory, if [ttyp] (test type indicator) = (03) or (13). must be > spud date and < then [gofb] (gauge off bottom)",Date/time gauge on bottom,~ HEADER DATA - GAUGE (n),GRD
+GOFB.DAY/HR/SS,YYYY MM DD HHHH:SS,DATE/TIME GAUGE OFF BOTTOM,"mandatory, if [ttyp] (test type indicator) = (03) or (13). must be > [gonb] (gauge on bottom) and <= [ftdt] (final test date/time)",Date/time gauge off bottom,~ HEADER DATA - GAUGE (n),GRD
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,must be >= spud date and <= abandoned date and <= submission date,24 Hour clock,~ DATA TABLE - GAUGE (n),GRD
+TCUM.HR,"NUMB 10,5",GAUGE CUMULATIVE TIME,"mandatory, if [ttyp] (test type indicator) <> (10). can be zero.",Cumulative Time (hours),~ DATA TABLE - GAUGE (n),GRD
+DGAL.M,"NUMB 10,5",DEPTH OF RECORDER M CF,"optional. if present, must be <= total depth of well","Continuous/Running or Stopped Depth of Gauge, (Measured Depth/LOG) in mCF",~ DATA TABLE - GAUGE (n),GRD
+PRGA.KPAA,"NUMB 8,2",GAUGE PRESSURE KPAA,"mandatory, if [ttyp] (test type indicator) = 03.   if ([ftdt] - [tisi]) >= 14 days, no edit no error.    if < 14 days), then find {~pressure results  summary [prga] (pressure at stop depth)}, that matches last occurrence of {dtg (n) [prga] (pressure at stop depth)}. once found, use corresponding [time] (real time), go back a minimum of 2 hours and use corresponding [prga] (pressure at stop depth), subtract earliest pressure from latest and divide by number of hours,  if value <= 2.5 kpa/hr, ok, else error.",Pressure measured at that interval in time,~ DATA TABLE - GAUGE (n),GRD
+TGA.DEGC,"NUMB 5,2",GAUGE TEMPERATURE DEGC,,Temperature measured at that interval in time,~ DATA TABLE - GAUGE (n),GRD
+GCOM.,CHAR 240,GENERAL COMMENT,optional,"Comment on Gauge/Events (i.e. shut-in, open-to-flow, etc.)",~ DATA TABLE - GAUGE (n),GRD
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,"mandatory, if [ttyp] (test type indicator) = 10, must be >= spud date and <= abandoned date and <= submission date",24 Hour Clock,~ DATA TABLE - ACOUSTIC,GRD
+LLVL.M,"NUMB 10,5",LIQUID LEVEL M CF (LOG),"mandatory if [ttyp] (pressure test type) = 10, can be zero. at least 1 occurrence of [llvl] must exist in table. (note: zero = fluid to surface)","Calculated Length of Gas Column, as determined by wireline or interpreted by an Acoustic Shot - in LOG/measured depth (mCF). Note: For dry gas wells, Liquid Level (or Length of Gas Column) is to be reported equal to MPP or Null. A depth of zero will be interpreted as ""Liquid to Surface"".",~ DATA TABLE - ACOUSTIC,GRD
+PSUR.KPAA,"NUMB 8,2",SURFACE PRESSURE KPAA,"mandatory, if ([ttyp] (test type indicator) = 10. if ([ftdt] (final test date/time) - [tisi] (date/time well shut-in)) < 14 days) then [psur] (surface pressure) at the last real time in the table go back  2 hours and subtract the [psur] at that time) if value is <= 2.5 kpa/hr, ok,  else error.",,~ DATA TABLE - ACOUSTIC,GRD
+PASTYPE.,CHAR 7,DIGITAL DATA - AOF/TRANSIENT TEST DATA ,pas-trg,"Transient Pressure and Injection/Deliverability Test, Format",~ VERSION,TRG
+UNIT.,CHAR 1,UNITS FLAG,(m)etric,Metric Units for AER submission,~ VERSION,TRG
+VERS.,"NUMB 5,2",AER DIGITAL WELL TEST DATA,4,Current AER version for ASCII test data submission,~ VERSION,TRG
+UWI.,CHAR 20 ,UNIQUE WELL ID,uwi must be valid and exist on aer database.,Unique Well Identifier - Bottomhole location.,~ WELL INFORMATION,TRG
+DRILLEG.,NUMB 2 ,DRILLING LEG,"must be 01, 02, 03…09 (cannot be 0 or null)","Drilling Leg (Event or Occurrence). Together with the UWI, this is to help define the bottom of the specific drill hole.",~ WELL INFORMATION,TRG
+WLIC.,CHAR 9,AER WELL LICENSE NUMBER,well license number must match aer license number for uwi ,AER Well License Number,~ WELL INFORMATION,TRG
+FORM.,CHAR 20 ,FORMATION NAME,,Name of the geological formation/zone,~ WELL INFORMATION,TRG
+WSFL.,NUMB 2,WELL FLUID TYPE AT TEST DATE,"must have a valid aer fluid code = (01) oil, (02) gas, (06) water, or (17) crude bitumen","Type of Dominant Fluid Production/Pay (i.e. oil, gas, water)",~ WELL INFORMATION,TRG
+WTYP.,CHAR 1,WELL TYPE INDICATOR ,"must be (v)ertical, (d)eviated or (h)orizontal","Flag indicating (V)ertical, (D)eviated, or (H)orizontal Wellbore",~ WELL INFORMATION,TRG
+PACKER.,CHAR 1,PACKER INDICATOR FLAG,must be either (y)es or (n)o.,"Flag indicating presence of packer (Y)es, (N)o",~ WELL INFORMATION,TRG
+TULD.,CHAR 1,TUBING IN WELL,must be either (y)es or (n)o.,Flag indicating Tubing in well (Y) or (N),~ WELL INFORMATION,TRG
+AFLO.,CHAR 1,FLOW PATH,"must be either (a)nnular, (c)asing, (t)ubing, or (b)oth - casing and tubing.","Flag indicating flow path (A)nnular, (C)asing, (T)ubing, or (B)oth casing and tubing",~ WELL INFORMATION,TRG
+TUBS.MM,"NUMB 4,1",INSIDE DIAMETER OF PRODUCTION TUBING,"mandatory, if [tuld] (tubing in well) = (y)es and [aflo] (flow path) = (t)ubing or (b)oth. if present must be < [ptod] (outside diameter of production tubing)",Inside diameter of production tubing,~ WELL INFORMATION,TRG
+PCID.MM,"NUMB 4,1",INSIDE DIAMETER OF PRODUCTION CASING,"mandatory, if [aflo] (flow path) = (a)nnular, (c)asing or (b)oth. if present must be > 0.00 and < 350",Inside diameter of production casing,~ WELL INFORMATION,TRG
+PTOD.MM,"NUMB 4,1",OUTSIDE DIAMETER PRODUCTION TUBING ,"mandatory, if [tuld] (tubing in well) = (y)es and [aflo] (flow path) = (a)nnular or (b)oth/casing and tubing. if present must be < [pcid] (inside diameter of production casing)",Outside diameter of production tubing,~ WELL INFORMATION,TRG
+PRPS.,CHAR 1,TEST PURPOSE ,"test purpose flag must be (i)nitial test, (a)nnual pressure, or (o)ther","(I)nitial or (A)nnual for fulfillment of Guide 40, Regulatory Testing Requirements. (O)ther indicates test conducted strictly for Licensee's own purpose, and which may not comply with a number of testing restrictions Please Note: Subsequent tests captured for Licensees own needs, but considered representative of the reservoirs (i.e. Stable and/or Interpreted), should be submitted as (A)nnual. ",~ TEST DATA,TRG
+SERCO.,CHAR 5,SERVICE COMPANY CODE,,Service or Wireline Company conducting test ,~ TEST DATA,TRG
+H2SIND.,CHAR 1,H2S INDICATOR,must be (y)es or (n)o.,Flag indicating presence of Hydrogen Sulphide (H2S) gas,~ TEST DATA,TRG
+INTRP.,CHAR 1,TEST INTERPRETATION PRESENT,"must be (y)es or (n)o.  if test purpose (i) initial and prsty = 50, then intrp must be (y) yes.",Flag indicating whether or not Transient Analysis or Test Interpretation was performed. Recommended plots for all tests are log-log plot with pressure derivative for flow regime identification and specialized plots for validation purposes.,~ TEST DATA,TRG
+TTOPL.M,"NUMB 6,2",TEST/PROD INTERVAL TOP M KB (LOG),[ttopl] (interval top - log) must be > 0.0 and < [tbasl] (interval base - log),"Top of tested or producing interval - in log depth, measured mKB",~ TEST DATA,TRG
+TBASL.M,"NUMB 6,2",TEST/PROD INTERVAL BASE M KB (LOG),[tbasl] (interval base - log) must be > 0.0 and => [ttopl] (interval top - log)  and cannot be greater than total well depth.,"Base of tested or producing interval - in log depth, measured mKB",~ TEST DATA,TRG
+TTOPT.M,"NUMB 6,2",TEST/PROD INTERVAL TOP M KB (TVD),"if [wtyp] (well type indicator) = (d)eviated or (h)orizontal,  then [ttopt] (interval top - tvd) must be <  [ttopl] (interval top - log), else if  [wtyp] = (v)ertical, then [ttopt] must = [ttopl]","Top of tested or producing interval - in true vertical depth, calculated mKB",~ TEST DATA,TRG
+TBAST.M,"NUMB 6,2",TEST/PROD INTERVAL BASE M KB (TVD),"if [wtyp] (well type indicator) = (d)eviated or (h)orizontal,  then [tbast] (interval base - tvd) must be <  [tbasl] (interval base - log), else if  [wtyp] = (v)ertical, then [tbast] must = [tbasl]","Base of tested or producing interval  in true vertical depth, calculated mKB",~ TEST DATA,TRG
+FTDT.DAY/HR,YYYY MM DD HHHH,FINAL TEST DATE/TIME,must be >= spud date and <= abandoned date and <= submission date,Date/time test ended,~ TEST DATA,TRG
+TUPS.KPAA,"NUMB 8,2",INITIAL TUBING PRESSURE,"mandatory, if [aflo] (flow path) = (t)ubing or (b)oth and [prsty] (pressure test type) <> (34), else can be null.","Initial Tubing Pressure (kPaa): For Build-Ups tests, the pressure at end of flow (prior to shut-in). For Drawdown tests, the static pressure prior to flow",~ TEST DATA,TRG
+CSPS.KPAA,"NUMB 8,2",INITIAL CASING PRESSURE,"mandatory, if [aflo] (flow path) = (a)nnular, (c)asing or (b)oth and [prsty] (pressure test type) <> (34), else can null.         ","Initial Casing Pressure (kPaa): For Build-Ups tests, the pressure at end of flow (prior to shut-in). For Drawdown tests, the static pressure prior to flow",~ TEST DATA,TRG
+FTUPS.KPAA,"NUMB 8,2",FINAL TUBING PRESSURE,"mandatory, if [aflo] (flow path) = (t)ubing or (b)oth and [prsty] (pressure test type) <> (34), else can be null.","Final Tubing Pressure (kPaa): For Build-Ups tests, the pressure at end of the shut-in period. For Drawdown tests, the final pressure at end of drawdown period",~ TEST DATA,TRG
+FCSPS.KPAA,"NUMB 8,2",FINAL CASING PRESSURE,"mandatory, if [aflo] (flow path) = (a)nnular, (c)asing or (b)oth and [prsty] (pressure test type) <> (34), else can null.        ","Final Casing Pressure (kPaa): For Build-Ups tests, the pressure at end of the shut-in period. For Drawdown tests, the final pressure at end of drawdown period",~ TEST DATA,TRG
+PFWH.KPAA,"NUMB 8,2",FINAL FLOWING/INJECTION WELLHEAD PRESSURE,optional.,Measured Final Flowing / injection pressure at the wellhead kPaa,~ TEST DATA,TRG
+TSUR.DEGC,"NUMB 5,2",SURFACE TEMPERATURE DEGC,"mandatory, if all [surbtm] (gauge location) gauges = (s)urface.",Temperature measured at wellhead during operations,~ TEST DATA,TRG
+AOFTY.,NUMB 2,AOF TYPE,"must be valid aer pas-trg deliverability test code (see footnote). if [aofext] (extended sandface aof) >= 300 and [sgptau] (single-point authorization) is null, then [aofty] (aof type) must = 02 or 32  ; either [aofty] or [prsty] (pressure test type) is mandatory (if [aofty] is null, then [prsty] is mandatory).  if [aofty] = 31 then [aofwh] (stabilized wellhead aof) and [aofwex] (extended wellhead aof) must be =< 21)",,~ AOF / IPR RESULTS SUMMARY,TRG
+SGPTAU.,CHAR 7,SINGLE-POINT AUTHORIZATION,"optional, if [aofty] (aof type) < > 02 or 32 and ( [aofext] (extended sandface aof) or [aofsf] (stabilized sanface aof) > = 300.",Authorization Number indicating AER Approval to conduct a Single-Point AOF with potential expected to exceed 300 103m3/d.,~ AOF / IPR RESULTS SUMMARY,TRG
+AIN.,CHAR 1,INLINE AOF INDICATOR FLAG,"mandatory, if [aofty] (aof type) is present. must be (y)es or (n)o. if aer records indicate ""well on production"" then [ftdt] (final test date/time) must >= on production date (opd), else error.",Well must be tied into pipeline during operations.            PRD.PAS required if Production Tester on site.,~ AOF / IPR RESULTS SUMMARY,TRG
+LIT.,CHAR 1,LIT ANALYSIS INDICATOR FLAG,"mandatory, if [aofty] (aof type) is present. must be (y)es or (n)o.",Flag indicating LIT (Lamiinar-Inertial-Turbulent) Flow Analysis (Y)es or (N)o,~ AOF / IPR RESULTS SUMMARY,TRG
+QGLM.E3M3/D,"NUMB 13,4",LAST MEASURED GAS RATE,"mandatory, if [aofty] (aof type) is present.",(103m3/d). Last Measured or Extended Flowrate,~ AOF / IPR RESULTS SUMMARY,TRG
+QGST.E3M3/D,"NUMB 13,4",STABILIZED GAS RATE,"mandatory, if [aofty] (aof type) is present.",Calc Stabilized flow rate at Final Test conditions as per Regulatory Requirements (103m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+NSF.,"NUMB 3,2",INVERSE SLOPE AT SANDFACE,if [aofty] (aof type) = 31 then [nsf] (inverse slope at sandface) must be null; if lit = (y)es can be null and if [aofty] (aof type) = 02 or 32  then [nsf] must be => 0.5 and <= 1.0 or if [aofty] = 01 then [nsf] must = 1.0.,"Note: like the current [SGPTAU], approval from the AER would be required prior to submission of test data (an Approval Number will be assigned)",~ AOF / IPR RESULTS SUMMARY,TRG
+AOFEXT.E3M3/D,"NUMB 13,4",EXTENDED SANDFACE AOF,"mandatory, if [aofty] (aof type) <> 31, else must be null.",Extended Transient Sandface AOF potential (103m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+AOFSF.E3M3/D,"NUMB 13,4",STABILIZED SANDFACE AOF,"mandatory, if [aofty] (aof type) <> (31), else null.",Stabilized Sandface AOF Potential (103m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+NWH.,"NUMB 3,2",INVERSE SLOPE AT WELLHEAD,"mandatory, if [aofty] (aof type) = (31); if [lit] (lit analysis indicator flag) = (y)es can be null. if [aofty] (aof type) = 02 or 32  then [nsf] must be => 0.5 and <= 1.0 or if [aofty] = 01 then [nwh] must = 1.0.  must be submitted if calculated.","Wellhead inverse slope - ""n"" (should be 0.5-1.0).",~ AOF / IPR RESULTS SUMMARY,TRG
+AOFWEX.E3M3/D,"NUMB 13,4",EXTENDED WELLHEAD AOF,"mandatory, if [aofty] (aof type) = 31. if [aofty] <> 31 then can be null.",Extended Transient Wellhead AOF potential (103m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+AOFWH.E3M3/D,"NUMB 13,4",STABILIZED WELLHEAD AOF,"mandatory, if [aofty] (aof type) = 31. if [aofty] <> 31 then can be null.",Stabilized Wellhead AOF potential (103m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+QOLM.M3/D,"NUMB 13,4",LAST MEASURED OIL RATE,"mandatory, if [aofty] (aof type) = 41 then field must be present.",(103m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+QOST.M3/D,"NUMB 13,4",STABILIZED OIL RATE,"mandatory, if [aofty] (aof type) = 41",Calc Stabilized flow rate @ Final Test conditions / Guide 40 (m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+IPRST.M3/D,"NUMB 13,4",STABILIZED OIL IPR,"mandatory, if  [aofty] (aof type) = 41 ",Stabilized inflow performance rate for oil well (m3/d),~ AOF / IPR RESULTS SUMMARY,TRG
+IPRMAX.M3/D,"NUMB 13,4",MAXIMUM OIL IPR (M3/D),"mandatory, if  [aofty] (aof type) = 41 ",Maximum inflow performance rate for oil well,~ AOF / IPR RESULTS SUMMARY,TRG
+PFSF.KPAA,"NUMB 8,2",STABILIZED FLOWING SANDFACE PRESSURE,"mandatory, if [aofty] (aof type) is present, else if [aofty] = 31 then it can be null. ffield must be present",(kPaa),~ AOF / IPR RESULTS SUMMARY,TRG
+LMPFSF.KPAA,"NUMB 8,2",LAST MEASURED FLOWING SANDFACE PRESSURE,if [aofty] (aof type) = 31 then it can be null else mandatory,(kPaa),~ AOF / IPR RESULTS SUMMARY,TRG
+PFWH.KPAA,"NUMB 8,2",STABILIZED FLOWING WELLHEAD PRESSURE,"mandatory, if [aofty] (aof type) = 31, must be > 0.00. if [aofty] <> 31,  can be null.",(kPaa),~ AOF / IPR RESULTS SUMMARY,TRG
+WPRE.KPAA,"NUMB 8,2",STATIC WELLHEAD PRESSURE,"mandatory, if [aofty] (aof type) = 31, must be > 0.00. if [aofty] <> 31,  can be null.",(kPaa),~ AOF / IPR RESULTS SUMMARY,TRG
+LMPFWH.KPAA,"NUMB 8,2",LAST MEASURED FLOWING WELLHEAD PRESSURE,"mandatory, if [aofty] (aof type) = 31, must be > 0.00. if [aofty] <> 31,  can be null.",(kPaa),~ AOF / IPR RESULTS SUMMARY,TRG
+PAVG.KPAA,"NUMB 8,2",AVERAGE RESERVOIR PRESSURE AT MPP,"mandatory, if [aofty] (aof type) is present, else if [aofty] = 31 then it can be null.",(kPaa),~ AOF / IPR RESULTS SUMMARY,TRG
+AOFC.,CHAR 240,AOF COMMENT,optional,Freeform comment of AOF/Deliverability quality. Data updates AER Pressure Summary Database.,~ AOF / IPR RESULTS SUMMARY,TRG
+RTNUM.,CHAR 1,"RATE NO. (1),(2) …..(E)XTENDED.",= <9 or 'e',Rate Period,~ DATA TABLE - PRODUCTION SUMMARY,TRG
+FDUR.HR,"NUMB 10,5",FLOW DURATION HOURS,,Hours flowed during each [RTNUM] Period,~ DATA TABLE - PRODUCTION SUMMARY,TRG
+QOIL.M3/D,"NUMB 13,4",OIL PRODUCTION RATE,"mandatory, if [wsfl] (well fluid type) = (01), can be zero. if [wsfl] <> (01), can be blank.  if prsty = 50 and injfl = 01 (oil), then cannot be zero and must enter at least 2 dtsum lines",Oil rate during each Rate (RTNUM) Period (m3/d).,~ DATA TABLE - PRODUCTION SUMMARY,TRG
+QGAS.E3M3/D,"NUMB 13,4",GAS PRODUCTION RATE,"mandatory, if [wsfl] (well fluid type) = (02) and [prsty] (pressure test type) < > = (11), then  at least 1 line must be >0.00;   if prsty = 50 and injfl = 02 (gas), then cannot be zero and must enter at least 2 dtsum lines                                                                   ",Gas rate during each Rate (RTNUM) Period (103m3/d).,~ DATA TABLE - PRODUCTION SUMMARY,TRG
+QCON.M3/D,"NUMB 13,4",CONDENSATE PRODUCTION RATE,can be blank or zero,Condensate rate during each Rate (RTNUM) Period (m3/d).,~ DATA TABLE - PRODUCTION SUMMARY,TRG
+CONGR.M3/E-3M3,"NUMB 5,4",CONDENSATE TO GAS RATIO,"mandatory, if [qcon] (condensate production rate) > 0.0",(m3/10-3m3),~ DATA TABLE - PRODUCTION SUMMARY,TRG
+GEQV.E3M3/D,"NUMB 13,4",GAS EQUIVALENT OF CONDENSATE,"mandatory, if [qcon] (condensate production rate) > 0.0",(103m3/d),~ DATA TABLE - PRODUCTION SUMMARY,TRG
+QRGAS.E3M3/D,"NUMB 13,4",RECOMBINED GAS PRODUCTION RATE,"mandatory, if [qcon] (condensate production rate) > 0.0",(103m3/d),~ DATA TABLE - PRODUCTION SUMMARY,TRG
+QWTR.M3/D,"NUMB 13,4",WATER PRODUCTION RATE,"mandatory, can be zero;  if prsty = 50 and injfl = 06 (water), then cannot be zero and must enter at least 2 dtsum lines",Water rate during each Rate (RTNUM) Period (m3/d).,~ DATA TABLE - PRODUCTION SUMMARY,TRG
+PRSTY.,NUMB 2,PRESSURE TEST TYPE,"must be valid aer pas-trg well pressure test code (see footnote). can be null if [aofty] (aof type) not null.   if [prsty] (pressure test type) = 06, 11 or 12 then [prps] (test purpose indicator) must = (a)nnual or (o)ther.",NOTE: New Pressure Test Type (PRSTY) for DFIT = 50,~ PRESSURE RESULTS - SUMMARY,TRG
+TISI.DAY/HR,YYYY MM DD HHHH,TIME/DATE WELL SHUT-IN,must be > = spud date and < [ftdt] (final test date and time) and the submission date,Date/time well shut-in for final BU/FO,~ PRESSURE RESULTS - SUMMARY,TRG
+GSERU.,CHAR 20,GAUGE SERIAL NUMBER USED IN SUMMARY,must be found in 1 raw data table,Serial number of gauge used to represent reservoir,~ PRESSURE RESULTS - SUMMARY,TRG
+REPMPP.KPAA,"NUMB 8,2",REPRESENTATIVE PRESSURE AT MPP,"if [intrp] (test interpretation present) = (y)es and ([pextr] (representative extrap/false pressure) = [repmpp] (representative pressure at mpp)) or ([pavg] (representative avg reservoir pressure) = [repmpp]), then the transient pressure can not build or fall by more than 2 kpa/hr (over last 6 hours of shut-in), else error. note: above calculations performed, if test types [prsty] = 04, 06 or 14 by way of [lmp] vs. ~dtg (n) [prga], or if test types [prsty] = 11 or 12 by way of [lmp] vs. ~dtac [psur].",Representative pressure from Gauge or Run/Stop Depth OR Acoustic Calculation converted or adjusted to MPP. (Not for P* or Pr). See [PEXTR] and [PAVG].,~ PRESSURE RESULTS - SUMMARY,TRG
+PRCOR.KPA,"NUMB 8,2",PRESSURE CORRECTION,"mandatory, can be zero, else if [gseru] (gauge serial number used in summary) matches a representative gauge (~dtg n) [gser] (gauge serial number), where [surbtm] (gauge location) = (s)urface, then [prcor] must be > 0.00",Report Pressure Differential (value) used to adjust measured pressure from Run Depth or Final Surface pressure to MPP. Negative values if gauge ran below MPP,~ PRESSURE RESULTS - SUMMARY,TRG
+LMP.KPAA,"NUMB 8,2",LAST MEASURED PRESSURE AT RUN DEPTH,"if ([prps] (test purpose) = (a)nnual or (i)nitial and ([prsty] (pressure test type) = 04, 11 or 14 (for build-up)) or if ([prps] = (a) and [prsty] = 06 or 12 (for falloff)), and ([intrp] (test interpretation present) = (n)o), then the transient pressure can not build or fall by more than 2 kpa/hr (over last 6 hours of shut-in), else error.  this rule does not apply to dfit [prsty = 50]. note: above calculations performed, if test types [prsty] = 04, 06 or 14 by way of [lmp] vs. ~dtg (n) [prga], or if test types [prsty] = 11 or 12 by way of [lmp] vs. ~dtac [psur].","Last measured reservoir pressure kPaa at selected Run Depth, respresentative of Reservoir (i.e. closest to mpp), OR Last measured Surface Pressure for Acoustic Well Sounders.  If DFIT is used to fulfill initial (I) pressure requirements, the data must still be analyzed even if pressure at end of test is 2 kPa/hr for last 6 hours.            ",~ PRESSURE RESULTS - SUMMARY,TRG
+TRES.DEGC,"NUMB 5,2",RESERVOIR TEMPERATURE,,Representative reservoir temperature (DegC),~ PRESSURE RESULTS - SUMMARY,TRG
+ANCO.,CHAR 20,COMPANY CONDUCTING ANALYSIS,"mandatory, if [intrp] (test interpretation present) = (y)es",Name of firm that performed analysis,~ PRESSURE RESULTS - SUMMARY,TRG
+PEXTR.KPAA,"NUMB 8,2",REPRESENTATIVE EXTRAP/ FALSE PRESSURE,"mandatory, if [intrp] (test interpretation present) = (y)es, else must be null. if present and [prsty] (pressure test type) = (04), (11), or (14), then [pextr] must be = > [repmpp] (representative pressure at mpp), else if [prsty] = (06), (12) or (50) then [pextr] must be <= [repmpp].",Commonly known as P* (kPaa) at MPP,~ PRESSURE RESULTS - SUMMARY,TRG
+GRPEXTR.KPA/M,"NUMB 5,3",REPRESENTATIVE EXTRAP/FALSE PRESSURE GRADIENT (TVD),"mandatory, if [prsty] = 50 and [intrp] (test interpretation present) = (y)es;  must be > zero",Reservoir pressure gradient (kPa/m).  ,~ PRESSURE RESULTS - SUMMARY,TRG
+PAVG.KPAA,"NUMB 8,2",REPRESENTATIVE AVG RESERVOIR PRESSURE AT THE WELL ,"optional. if present and [prsty] (pressure test type) = (04), (11), or (14), then [pavg] must be >= [repmpp] (representative pressure at mpp),  if [prsty] = (06), (12) or (50) then [pavg] must be <= [repmpp]",Best estimate of reservoir pressure kPaa at MPP,~ PRESSURE RESULTS - SUMMARY,TRG
+PWF.KPAA,"NUMB 8,2",SANDFACE FLOWING / INJECTION  PRESSURE AT SHUT-IN,"mandatory, if [intrp] (test interpretation present) = (y)es and [prsty]  (pressure test type) = 11 or 14 [pwf] (sandface flowing pressure at shut-in) must be < [repmpp] (representative pressure at mpp). if [prsty] = 06, 12 or 50 [pwf] (sandface injection pressure at shut-in) must be > [repmpp]","Flowing / injection sandface pressure @ shut-in, (kPaa)",~ PRESSURE RESULTS - SUMMARY,TRG
+QRATE.M3/DorE3M3/D,"NUMB 13,4",FINAL RATE PRIOR TO SHUT-IN,"mandatory, if [intrp] (test interpretation present) = (y)es, or [prsty] (pressure test type) = (06), (14), or (24), else can be null. can be negative if [prsty] = (06, 12 or 50), if present and [wsfl] (well fluid type) = (02), then [qrate] must be reported as (e3m3/d), else (m3/d).","Production or Injection prior to build-up or falloff. If Gas, report rate as E3M3/D, else if Oil or Water, report as (m3/d.)",~ PRESSURE RESULTS - SUMMARY,TRG
+SKIN.,"NUMB 5,2",CALCULATED SKIN FACTOR,"mandatory, if [intrp] (test interpretation present) = (y)es;  can be negative",Apparent WELLBORE Skin Factor,~ PRESSURE RESULTS - SUMMARY,TRG
+KH.MDM,"NUMB 13,7",CALCULATED FLOW CAPACITY,"mandatory, if [intrp] (test interpretation present) = (y)es;  must be > zero",Flow capacity (e.g. use limiting KH.mD·M on composite model). millidarcy-m ,~ PRESSURE RESULTS - SUMMARY,TRG
+PRISIP.KPAA,"NUMB 8,2","DFIT INSTANTANEOUS SHUT-IN PRESSURE, BOTTOM HOLE","mandatory, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es;  must be > zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+GRISIP.KPA/M,"NUMB 5,3",ISIP GRADIENT (TVD),"mandatory, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es;  must be > zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+PRCL.KPAA,"NUMB 8,2","CLOSURE PRESSURE, BOTTOM HOLE","optional, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es;  must be > zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+GRCL.KPA/M,"NUMB 5,3",CLOSURE GRADIENT (TVD),"optional, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es;  must be > zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+INJFL.,NUMB 2,INJECTED FLUID,"mandatory, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es; must have a valid aer fluid code = (01) oil, (02) gas, (06) water; must be > zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+QDFIT.M3/MINUTE,"NUMB 6,4",FINAL INJECTION RATE (DFIT only),"mandatory, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es;  cannot be zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+VTDFIT.M3,"NUMB 7,4",TOTAL VOLUME INJECTED FOR DFIT,"mandatory, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es;  cannot be zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+LLDFIT.M,"NUMB 10,5",LIQUID LEVEL DFIT M CF (TVD),"mandatory, if [prsty] = (50) and [intrp] (test interpretation present) = (y)es;  cannot be zero",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+EFF.FRAC,"NUMB 4,3",FLUID EFFICIENCY,"optional, if [prsty] = (50) ",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+TFLC.M/MIN1/2,"NUMB 9,8",TOTAL FLUID LOSS COEFFICIENT,"optional, if [prsty] = (50) ",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+RFLC.M/MIN1/2,"NUMB 9,8",RESERVOIR FLUID LOSS COEFFICIENT,"optional, if [prsty] = (50) ",For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+Loc.m(MD),"NUMB 7,2",DEPTH OF TEST INTERVAL (m-MD),"mandatory, if [prsty] = (50) ;  must be > zero",For DFIT only; measured depth of the stage where the DFIT was conducted.,~ PRESSURE RESULTS - SUMMARY,TRG
+Clusters.,NUMB 3,Number of Clusters for DFIT,optional,For DFIT only,~ PRESSURE RESULTS - SUMMARY,TRG
+Compl.,CHAR 250,Type of Completion,optional,Freeform comment for Type of Completion,~ PRESSURE RESULTS - SUMMARY,TRG
+PVT.,CHAR 1,PVT Study,"optional, must be either (y)es or (n)o.","If Yes, then attach a PDF of PVT Study to the TRG Pas file.",~ PRESSURE RESULTS - SUMMARY,TRG
+PRGC.,CHAR 240,COMMENT ON PRESSURE,optional,"Freeform comment of Pressure - comparison to trend, offsets, shut-in time etc. Data updates AER Pressure Summary Database.",~ PRESSURE RESULTS - SUMMARY,TRG
+PAY.M,"NUMB 10,5",VERTICAL HEIGHT OF FORMATION M,,Net pay or height of formation used in analysis,~ ANALYSIS INPUT PARAMETERS,TRG
+PORO.FRAC,"NUMB 4,3",ASSUMED POROSITY FRACTION,,Porosity of reservoir used in analysis,~ ANALYSIS INPUT PARAMETERS,TRG
+SATW.FRAC,"NUMB 3,2",ASSUMED WATER SATURATION FRACTION,"can be zero, sum of [satw] (assumed water saturation) + [satg] (assumed gas saturation) + [sato] (assumed oil saturation) must = 1 ",Water saturation assumed for this analysis,~ ANALYSIS INPUT PARAMETERS,TRG
+SATG.FRAC,"NUMB 3,2",ASSUMED GAS SATURATION FRACTION,can be zero,Gas saturation assumed for this analysis,~ ANALYSIS INPUT PARAMETERS,TRG
+SATO.FRAC,"NUMB 3,2",ASSUMED OIL SATURATION FRACTION,can be zero,Oil saturation assumed for this analysis SATO+SATG+SATW=1,~ ANALYSIS INPUT PARAMETERS,TRG
+HZFL.M,"NUMB 10,5",HORIZONTAL WELL LENGTH IN FORMATION,"mandatory, if [wtyp] (well type) = (h)orizontal). if [wtyp] = (v)ertical, must be null, else optional.","Must be >0, if WTYP is horizontal",~ ANALYSIS INPUT PARAMETERS,TRG
+RDOIL.,"NUMB 4,3",OIL RELATIVE DENSITY ,"if [wsfl] (well fluid type) = 02 may be null, else must be > 0 and <1",Oil density relative to water (unit-less),~ ANALYSIS INPUT PARAMETERS,TRG
+RDGAS.,"NUMB 4,3",GAS RELATIVE DENSITY ,"mandatory, if [wsfl] (well fluid type) = 02,  must be > 0 and < 1",Gas density relative to air (unit-less);  Recombined,~ ANALYSIS INPUT PARAMETERS,TRG
+RDWTR.,"NUMB 4,3",WATER RELATIVE DENSITY ,must be >= 1,Water density relative to water (unit-less) (>1.0),~ ANALYSIS INPUT PARAMETERS,TRG
+PBP.KPAA,"NUMB 8,2",OIL BUBBLE POINT PRESSURE,"if [wsfl] (well fluid type) not = 01, [pbp] (oil bubble point pressure) can be null else mandatory",Bubble point pressure of oil (kPaa),~ ANALYSIS INPUT PARAMETERS,TRG
+BO.RM3/M3,"NUMB 4,2",OIL FORMATION VOLUME FACTOR,oil formation volume factor must be given if [wsfl] (well fluid type) = (01) oil.,Oil shrinkage factor from surface to reservoir conditions,~ ANALYSIS INPUT PARAMETERS,TRG
+RS.M3/M3,"NUMB 7,2",OIL SOLUTION GOR,"mandatory, if [wsfl] (well fluid type) = 01 (oil); else can be null",Solution gas oil ratio,~ ANALYSIS INPUT PARAMETERS,TRG
+PPLV.M,"NUMB 10,5",PUMPING LIQUID LEVEL M CF (TVD) AT TIME = ZERO,"optional. if present, must be < total depth of well.","Liquid level (or Calculated Length of Gas Column) prior to shut-in (at time = zero). As determined by wireline or interpreted by an Acoustic - - in TVD depth, measured mCF. For dry gas wells, Liquid Level (or Length of Gas Column) is to be reported equal to MPP or Null. A depth of zero will be interpreted as ""Liquid to Surface"".",~ ANALYSIS INPUT PARAMETERS,TRG
+METHC.,CHAR 240,METHOD OF ACOUSTIC/DEAD WEIGHT TESTER EXTRAPOLATION COMMENT,"mandatory, if [prsty] (pressure test type) = 11 or 12","Description pertaining to the method of Acoustic / DWT calculation, in accordance with AER Guide 3 and Guide 5.",~ ANALYSIS INPUT PARAMETERS,TRG
+SURBTM.,CHAR 1,GAUGE LOCATION,"must be (s)urface or (b)ottomhole.                     if prsty = 50, surbtm can be (s) surface or (b) bottomhole and will still meet initial (i) pressure requirements ",Flag indicating Position/Location of Gauge                                          ,~ HEADER DATA - GAUGE (n),TRG
+GSER.,CHAR 20,GAUGE SERIAL NUMBER ,one gauge must match [gseru] (gauge serial number used in summary),Serial or Reference number of Gauge/Recorder. Note: Number required for the ability to audit gauge data.,~ HEADER DATA - GAUGE (n),TRG
+GTYPMM.,CHAR 90,GAUGE TYPE / MANUFACTURER / MODEL,"gauge type, manufacturer and model must be separated with slashes.","Type (mechanical, electronic, model), manufacturer, and model, of gauge used, for source data",~ HEADER DATA - GAUGE (n),TRG
+GRNG.KPAA,"NUMB 8,2",MAXIMUM RECORDER RANGE,,Full scale pressure range of source gauge (kPaa),~ HEADER DATA - GAUGE (n),TRG
+GCAL.DAY,YYYY MM DD,DATE OF LAST CALIBRATION,must be < = [ftdt] (final test date/time),Date source gauge last calibrated,~ HEADER DATA - GAUGE (n),TRG
+GRES.,"NUMB 6,5",RESOLUTION % OF FULL-SCALE,,Published resolution of source gauge,~ HEADER DATA - GAUGE (n),TRG
+GACC.,"NUMB 6,5",ACCURACY % OF FULL-SCALE ,,Published accuracy of source gauge,~ HEADER DATA - GAUGE (n),TRG
+RDGAL.M,"NUMB 10,5",GAUGE RUN DEPTH M CF (LOG),"if [surbtm] (gauge location) = (s)urface, then [rdgal] must = 0","Source gauge final stop depth,  (Measured Depth/LOG) in mCF",~ HEADER DATA - GAUGE (n),TRG
+GONB.DAY/HR/SS,YYYY MM DD HHHH:SS,DATE/TIME GAUGE ON BOTTOM OR SURFACE RECORDINGS BEGIN ,must be > spud date and < then [gofb] (gauge off bottom or surface recordings cease),Date/time source gauge on bottom,~ HEADER DATA - GAUGE (n),TRG
+GOFB.DAY/HR/SS,YYYY MM DD HHHH:SS,DATE/TIME GAUGE OFF BOTTOM OR SURFACE RECORDINGS CEASE,must be > [gonb] (gauge on bottom or surface recordings begin and <= [ftdt] (final test date/time),Date/time source gauge off bottom,~ HEADER DATA - GAUGE (n),TRG
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,must be >= spud date and <= abandoned date and <= submission date,24 Hour clock,~ DATA TABLE - GAUGE (n),TRG
+TCUM.HR,"NUMB 10,5",GAUGE CUMULATIVE TIME,can be zero.,Cumulative Time (hours),~ DATA TABLE - GAUGE (n),TRG
+PRGA.KPAA,"NUMB 8,2",GAUGE PRESSURE,,Pressure measured at that interval in time (kPaa),~ DATA TABLE - GAUGE (n),TRG
+TGA.DEGC,"NUMB 5,2",GAUGE TEMPERATURE,,Temperature measured at that interval in time (DegC),~ DATA TABLE - GAUGE (n),TRG
+GCOM.,CHAR 240,COMMENT - GENERAL,optional,"Comment on gauge/events (i.e. SI, open to flow, etc.)",~ DATA TABLE - GAUGE (n),TRG
+TIME.DAY/HR/SS,YYYY MM DD HHHH:SS,REAL TIME,"if [prsty] (pressure test type) = 11 or 12, then must be >= spud date and <= abandoned date and <= submission date",24 Hour clock,~ DATA TABLE ACOUSTIC,TRG
+ETIME.HR,"NUMB 10,5",ELAPSED TIME,can be zero,Elapsed time from start of test,~ DATA TABLE ACOUSTIC,TRG
+LLVL.M,"NUMB 10,5",LIQUID LEVEL M CF (LOG),"mandatory if [prsty] (pressure test type) = 11 or 12, can be zero. if [prps] (test purpose indicator) < > (i)inital, then at least 1 occurrence of [llvl] must exist in table. (note: zero = fluid to surface)","Calculated Length of Gas Column, as determined by wireline or interpreted by an Acoustic Shot - in LOG/measured depth (mCF). Note: For dry gas wells, Liquid Level (or Length of Gas Column) is to be reported equal to MPP or Null. A depth of zero will be interpreted as ""Liquid to Surface"".",~ DATA TABLE ACOUSTIC,TRG
+LLVT.M,"NUMB 10,5",LIQUID LEVEL M CF (TVD),"mandatory, if [wtyp] (well type) = (d)eviated or (h)orizontal. if [wtyp] = (v)ertical, then [llvt] can be null or = [llvl]","Calculated Length of Gas Column (or liquid level) for each shot (TVD). As determined by wireline or interpreted by an Acoustic - in TVD depth, calculated mCF. Note: See [LLVL]",~ DATA TABLE ACOUSTIC,TRG
+PSUR.KPAA,"NUMB 8,2",SURFACE PRESSURE,"mandatory, must be > 90 kpa",Measured casing/surface pressure at corresponding point of time (kPaa),~ DATA TABLE ACOUSTIC,TRG
+GRGAS.KPA/M,"NUMB 5,3",GAS GRADIENT (TVD),"mandatory, if [llvl] (liquid level - log) > 0.0 or null. then must appear at least once per table.",Estimated gradient of gas in wellbore,~ DATA TABLE ACOUSTIC,TRG
+GROIL.KPA/M,"NUMB 5,3",OIL GRADIENT  (TVD),"mandatory, if [wsfl] (well fluid type) = (01) or (17). then must appear at least once per table",Estimated gradient of oil in wellbore,~ DATA TABLE ACOUSTIC,TRG
+GRWTR.KPA/M,"NUMB 5,3",WATER GRADIENT  (TVD),"mandatory, if [qwtr] (water production or injection rate) > 0.0.  then must appear at least once per table",Estimated gradient of water in wellbore,~ DATA TABLE ACOUSTIC,TRG
+PMPPT.KPAA,"NUMB 8,2",CALCULATED PRESSURE AT MPP (TVD),"if ([ftdt] (final test date/time) - [tisi] (date/time well shut-in)) < 14 days) and [prps] (test purpose indicator) = (a)nnual or (i)nitial, get [pmppt] at the last real time in the table then go back  6 hours and subtract the [pmppt] at that time) if value is <= 2.5 kpa/hr, ok,  else error. ",Calculated using above parameters at corresponding point in time,~ DATA TABLE ACOUSTIC,TRG
+PRGA.KPAA,"NUMB 8,2",GAUGE PRESSURE,,Pressure (can be null for time before recorded data),~ DATA TABLE - INLINE RATE AND PRESSURE SUMMARY,TRG
+ITIME.HR,"NUMB 10,5",INCREMENTAL HOURS,"if present, [itime] must increment. can be negative",Elapsed time (can be negative for rates prior to recorded pressure data),~ DATA TABLE - INLINE RATE AND PRESSURE SUMMARY,TRG
+QGAS.E3M3/D,"NUMB 13,4",GAS PRODUCTION RATE,"if [qoil] (oil production rate) > 0.00, can be null or zero",Gas rate used for the transient analysis (can be null between rate change),~ DATA TABLE - INLINE RATE AND PRESSURE SUMMARY,TRG
+QOIL.M3/D,"NUMB 13,4",OIL PRODUCTION RATE,"if [qgas] (gas production rate) > 0.00, can be null or zero",Oil rate used for the transient analysis (can be null between rate changes),~ DATA TABLE - INLINE RATE AND PRESSURE SUMMARY,TRG
+QWTR.M3/D,"NUMB 13,4",WATER PRODUCTION RATE,can be null or zero,Water rate used for the transient analysis (can be null between rate changes),~ DATA TABLE - INLINE RATE AND PRESSURE SUMMARY,TRG
+GENC.,CHAR 240,GENERAL COMMENT,optional,General free form comment?,~ DATA TABLE - INLINE RATE AND PRESSURE SUMMARY,TRG
