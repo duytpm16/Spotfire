@@ -50,13 +50,10 @@ class TestWAN(unittest.TestCase):
 
 
     def test_numb(self):
-        mnemonics = {"DSCAL.MG/L": {"optional": False, "allow_zero": False, "allow_neg": False},
-            "PEOHM.": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "PHOBS.": {"optional": False, "allow_zero": False, "allow_neg": False},
-            "RDWTR.": {"optional": True, "allow_zero": True, "allow_neg": True},            
-            "RFIDX.": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "SALT.PCT": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "VERS.": {"optional": False, "allow_zero": False, "allow_neg": True}} | {
+        mnemonics = {"RDWTR.": {"optional": True, "allow_zero": True, "allow_neg": True},            
+                    "RFIDX.": {"optional": True, "allow_zero": True, "allow_neg": True},
+                    "SALT.PCT": {"optional": True, "allow_zero": True, "allow_neg": True},
+                    "VERS.": {"optional": False, "allow_zero": False, "allow_neg": True}} | {
                 "%s.MG/L" % (ion): {"optional": False, "allow_zero": True, "allow_neg": True} for ion in ["NA", "K", "CA", "MG", "CL", "HCO3", "SO4", "CO3", "OH", "H2S"]} | {
                 "%s.MEQ/L" % (ion): {"optional": False, "allow_zero": True, "allow_neg": True} for ion in ["NA", "K", "CA", "MG", "CL", "HCO3", "SO4", "CO3", "OH"]} | {
                 "%s.MG/L" % (ion): {"optional": True, "allow_zero": True, "allow_neg": True} for ion in ["BA", "SR", "FE", "MN", "B", "BR", "I", "DS110", "DS180", "DSING"]} | {
@@ -67,8 +64,20 @@ class TestWAN(unittest.TestCase):
             self.pas.check_null(mnemonic, config)
             self.pas.check_zero(mnemonic, config)
             self.pas.check_negative(mnemonic, config, 1, 100)
-            self.pas.check_within_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_within_range(mnemonic, -1e6, 1e6)
 
+
+    def test_numb_greater_than_0(self):
+        mnemonics = {"DSCAL.MG/L": {"optional": False, "allow_zero": False, "allow_neg": False},
+                    "PEOHM.": {"optional": True, "allow_zero": True, "allow_neg": True},
+                    "PHOBS.": {"optional": False, "allow_zero": False, "allow_neg": False}}
+        
+        
+        for mnemonic, config in mnemonics.items():
+            self.pas.check_null(mnemonic, config)
+            self.pas.check_zero(mnemonic, config)
+            self.pas.check_negative(mnemonic, config, 1, 100)
+            self.pas.check_within_range(mnemonic, 0.001, 1e6)
 
     def test_numb_code(self):
         mnemonics = {

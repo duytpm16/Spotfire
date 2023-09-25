@@ -16,6 +16,7 @@ class TestPAS(unittest.TestCase):
     field = None
     mn = "MNEMONIC NAME"
     fs = "FIELD SIZE"
+    br = "BUSINESS RULES AND EDITS"
 
     def subset_pas(self, analysis):
         self.pas.subset(analysis)
@@ -33,6 +34,7 @@ class TestPAS(unittest.TestCase):
             set(self.pas.data).issubset(self.pas.pt[self.mn]),
             "Not all mnemonic exists.",
         )
+        self.pas.pt_zip = zip(self.pas.pt[self.mn], self.pas.pt["FIELD"], self.pas.pt[self.fs], self.pas.pt[self.br])
 
         with self.assertRaises(SystemExit):
             self.pas.check_pas_data()
@@ -49,6 +51,7 @@ class TestPAS(unittest.TestCase):
             set(self.pas.data).issubset(self.pas.pt[self.mn]),
             "Not all mnemonic can be tested.",
         )
+        self.pas.pt_zip = zip(self.pas.pt[self.mn], self.pas.pt["FIELD"], self.pas.pt[self.fs], self.pas.pt[self.br])
 
         self.pas.check_pas_data()
 

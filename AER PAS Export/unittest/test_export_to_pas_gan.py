@@ -1,3 +1,4 @@
+import sys
 import math
 import random
 import string
@@ -33,7 +34,7 @@ class TestGAN(unittest.TestCase):
         self.pas.check_null(mnemonic, config)
         self.pas.check_zero(mnemonic, config)
         self.pas.check_negative(mnemonic, config, 1, 100)
-        self.pas.check_within_range(mnemonic, -math.inf, math.inf)
+        self.pas.check_within_range(mnemonic, -1e6, 1e6)
 
 
     def numb_code_test_sequence(self, mnemonic, config):
@@ -234,19 +235,19 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent1] = 'L'
         self.pas.check_null(mnemonic, {"optional": True})
         self.pas.check_zero(mnemonic, {"allow_zero": False})
-        self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+        self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
 
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'L'])
         self.pas.pas.data[dependent2] = 'N'
         self.pas.check_null(mnemonic, {"optional": False})
         self.pas.check_zero(mnemonic, {"allow_zero": True})
-        self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)    
+        self.pas.check_out_of_range(mnemonic, -1e6, 1e6)    
 
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'L'])
         self.pas.pas.data[dependent2] = random.choice([x for x in self.pas.pas.codes[dependent2] if x != 'N'])
         self.pas.check_null(mnemonic, {"optional": False})
         self.pas.check_zero(mnemonic, {"allow_zero": True})
-        self.pas.check_within_range(mnemonic, -math.inf, math.inf)    
+        self.pas.check_within_range(mnemonic, -1e6, 1e6)    
  
         del self.pas.pas.data[mnemonic]
         del self.pas.pas.data[dependent2]
@@ -303,7 +304,7 @@ class TestGAN(unittest.TestCase):
      
         kpa_mnemonics = {"FS-RPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         degC_mnemonics = {"FS-RTEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
@@ -325,11 +326,11 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, {"optional": True})
         
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic in mnemonics:
@@ -349,7 +350,7 @@ class TestGAN(unittest.TestCase):
  
         kpa_mnemonics = {"FS-SPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         degC_mnemonics = {"FS-STEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
@@ -378,11 +379,11 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent2] = None
 
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic in mnemonics:
@@ -421,7 +422,7 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, {"optional": True})       
 
         for mnemonic, config in numb_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})         
 
         for mnemonics in mnemonics:
@@ -452,7 +453,7 @@ class TestGAN(unittest.TestCase):
      
         kpa_mnemonics = {"SS-RPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         degC_mnemonics = {"SS-RTEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
@@ -475,7 +476,7 @@ class TestGAN(unittest.TestCase):
      
         for mnemonic, config in kpa_mnemonics.items():
             config['optional'] = True
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         for mnemonic, config in degC_mnemonics.items():
             config['optional'] = True
@@ -495,7 +496,7 @@ class TestGAN(unittest.TestCase):
             self.numb_code_test_sequence(mnemonic, config)        
      
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         for mnemonic, config in degC_mnemonics.items():
             self.unit_degC_test_sequence(mnemonic, config)
@@ -517,11 +518,11 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, {"optional": True})
         
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic in mnemonics:
@@ -547,7 +548,7 @@ class TestGAN(unittest.TestCase):
      
         kpa_mnemonics = {"SS-SPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         degC_mnemonics = {"SS-STEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
@@ -565,7 +566,7 @@ class TestGAN(unittest.TestCase):
      
         for mnemonic, config in kpa_mnemonics.items():
             config['optional'] = True
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         for mnemonic, config in degC_mnemonics.items():
             config['optional'] = True
@@ -579,7 +580,7 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         for mnemonic, config in degC_mnemonics.items():
             self.unit_degC_test_sequence(mnemonic, config)
@@ -592,7 +593,7 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])    
      
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         for mnemonic, config in degC_mnemonics.items():
             self.unit_degC_test_sequence(mnemonic, config)
@@ -606,11 +607,11 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent3] = None
 
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic in mnemonics:
@@ -663,7 +664,7 @@ class TestGAN(unittest.TestCase):
      
         kpa_mnemonics = {"CL-RPRES.KPAA": {"optional": True, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         degC_mnemonics = {"CL-RTEMP.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
@@ -685,11 +686,11 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, {"optional": True})
         
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic in mnemonics:
@@ -725,7 +726,7 @@ class TestGAN(unittest.TestCase):
  
         kpa_mnemonics = {"CL-SPRES.KPAA": {"optional": True, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+            self.unit_kPa_test_sequence(mnemonic, config)
 
         degC_mnemonics = {"CL-STEMP.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
@@ -738,11 +739,11 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent2] = None
 
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic in mnemonics:
@@ -782,7 +783,7 @@ class TestGAN(unittest.TestCase):
                      cl_mnemonics[2]: {"optional": True, "allow_zero": True, "allow_neg": True},
                      cl_mnemonics[3]: {"optional": True, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in mnemonics.items():
-            self.pas.pas.data[mnemonic] = random.uniform(-math.inf, math.inf)
+            self.pas.pas.data[mnemonic] = random.uniform(-1e6, 1e6)
             self.pas.check_assert_raised()
             self.pas.check_null(mnemonic, config)           
 
@@ -822,7 +823,7 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, config)
             self.pas.check_zero(mnemonic, config)
             self.pas.check_negative(mnemonic, config, 1, 100)
-            self.pas.check_out_of_range(mnemonic, 1, math.inf)
+            self.pas.check_out_of_range(mnemonic, 1, 1e6)
             self.pas.check_within_range(mnemonic, 0.001, 1)
 
         for mnemonic in mnemonics:
@@ -842,11 +843,11 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in numb_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in numb_rng_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})     
         
         for mnemonic in mnemonics:
@@ -879,7 +880,7 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, config)
             self.pas.check_zero(mnemonic, config)
             self.pas.check_negative(mnemonic, config, 1, 100)
-            self.pas.check_out_of_range(mnemonic, 1, math.inf)
+            self.pas.check_out_of_range(mnemonic, 1, 1e6)
             self.pas.check_within_range(mnemonic, 0.001, 1)
 
         numb_rng_mnemonics2 = {"RELMM.": {"optional": True, "allow_zero": False, "allow_neg": False}}
@@ -887,8 +888,8 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, config)
             self.pas.check_zero(mnemonic, config)
             self.pas.check_negative(mnemonic, config, 80, 250)
-            self.pas.check_out_of_range(mnemonic, -math.inf, 80)
-            self.pas.check_out_of_range(mnemonic, 250.001, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 80)
+            self.pas.check_out_of_range(mnemonic, 250.001, 1e6)
             self.pas.check_within_range(mnemonic, 80, 250)
 
         for mnemonic in mnemonics:
@@ -902,11 +903,11 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in numb_rng_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, config) 
 
         for mnemonic, config in numb_rng_mnemonics2.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, config)          
         
         for mnemonic in mnemonics:
@@ -949,7 +950,7 @@ class TestGAN(unittest.TestCase):
             self.pas.check_null(mnemonic, {"optional": True})
 
         for mnemonic, config in numb_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
         
         for mnemonic in mnemonics:
@@ -972,7 +973,7 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'R'])
         self.pas.pas.data[dependent2] = None
         for mnemonic, config in mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
         
         for mnemonic in mnemonics:
@@ -1000,7 +1001,7 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'R'])
         self.pas.pas.data[dependent2] = None
         for mnemonic, config in mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
         
         for mnemonic in mnemonics:
@@ -1058,15 +1059,15 @@ class TestGAN(unittest.TestCase):
         self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != 'R'])
 
         for mnemonic, config in numb_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, {"optional": True})
         
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, config)
 
         for mnemonic, config in degK_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
             self.pas.check_null(mnemonic, config)
 
         for mnemonic in mnemonics:

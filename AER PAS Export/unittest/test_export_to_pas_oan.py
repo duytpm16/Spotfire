@@ -72,16 +72,14 @@ class TestOAN(unittest.TestCase):
             "RDNCL.": {"optional": True, "allow_zero": True, "allow_neg": True},            
             "RDNRX.": {"optional": True, "allow_zero": True, "allow_neg": True},
             "TSALT.KG/M3": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "UKIN1.MM2/S": {"optional": False, "allow_zero": False, "allow_neg": False},
             "VERS.": {"optional": False, "allow_zero": False, "allow_neg": True}} | {
-                "DVL%s.FRAC" % (i): {"optional": True, "allow_zero": False, "allow_neg": True} for i in range(1, 21)} | {
-                "UKIN%s.MM2/S" % (i): {"optional": True, "allow_zero": False, "allow_neg": False} for i in range(2, 7)}
+                "DVL%s.FRAC" % (i): {"optional": True, "allow_zero": False, "allow_neg": True} for i in range(1, 21)}
         
         for mnemonic, config in mnemonics.items():
             self.pas.check_null(mnemonic, config)
             self.pas.check_zero(mnemonic, config)
             self.pas.check_negative(mnemonic, config, 1, 100)
-            self.pas.check_within_range(mnemonic, -math.inf, math.inf)
+            self.pas.check_within_range(mnemonic, -1e6, 1e6)
 
 
     def test_numb_code(self):
@@ -105,9 +103,7 @@ class TestOAN(unittest.TestCase):
             "PPTASTM.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True},
             "PPTUSBM.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True},
             "RTEMP.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "STEMP.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "UT1.DEGC": {"optional": False, "allow_zero": False, "allow_neg": False} } | {
-                "UT%s.DEGC" % (i): {"optional": True, "allow_zero": False, "allow_neg": False} for i in range(2, 7)} | {
+            "STEMP.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True}} | {
                 "DTP%s.DEGC" % (i): {"optional": True, "allow_zero": False, "allow_neg": True} for i in range(1, 21) }
 
         for mnemonic, config in mnemonics.items():
@@ -115,7 +111,7 @@ class TestOAN(unittest.TestCase):
             self.pas.check_zero(mnemonic, config)
             self.pas.check_negative(mnemonic, config, 0.001, 100, 100, 500)
             self.pas.check_out_of_range(mnemonic, 1000, 1500)
-            self.pas.check_within_range(mnemonic, 0.001, 1000)
+            self.pas.check_within_range(mnemonic, -100, 1000)
     
 
     def test_unit_kPa(self):
@@ -131,19 +127,6 @@ class TestOAN(unittest.TestCase):
             self.pas.check_negative(mnemonic, config, 1, 100)
             self.pas.check_out_of_range(mnemonic, 150000, 200000)
             self.pas.check_within_range(mnemonic, 0.001, 150000)
-
-
-    def test_unit_mPa(self):
-        mnemonics = {
-            "UAB1.MPA'S": {"optional": False, "allow_zero": False, "allow_neg": False} } | {
-                "UAB%s.MPA'S" % (i): {"optional": True, "allow_zero": False, "allow_neg": False} for i in range(2, 7)}
-
-        for mnemonic, config in mnemonics.items():
-            self.pas.check_null(mnemonic, config)
-            self.pas.check_zero(mnemonic, config)
-            self.pas.check_negative(mnemonic, config, 1, 100)
-            self.pas.check_out_of_range(mnemonic, 150, 1500)
-            self.pas.check_within_range(mnemonic, 0.001, 150)
 
 
     def test_dstloc(self):
@@ -187,19 +170,19 @@ class TestOAN(unittest.TestCase):
         self.pas.pas.data[mnemonic2] = None
         self.pas.check_assert_raised()
 
-        self.pas.pas.data[mnemonic1] = random.uniform(-math.inf, math.inf)
+        self.pas.pas.data[mnemonic1] = random.uniform(-1e6, 1e6)
         self.pas.pas.data[mnemonic2] = None
         self.pas.check_null(mnemonic1, {"optional": False})
         self.pas.check_zero(mnemonic1, {"allow_zero": True})
         self.pas.check_negative(mnemonic1, {"allow_neg": True}, 0.001, 100)
-        self.pas.check_within_range(mnemonic1, -math.inf, math.inf)
+        self.pas.check_within_range(mnemonic1, -1e6, 1e6)
 
         self.pas.pas.data[mnemonic1] = None
-        self.pas.pas.data[mnemonic2] = random.uniform(-math.inf, math.inf)
+        self.pas.pas.data[mnemonic2] = random.uniform(-1e6, 1e6)
         self.pas.check_null(mnemonic2, {"optional": False})
         self.pas.check_zero(mnemonic2, {"allow_zero": True})
         self.pas.check_negative(mnemonic2, {"allow_neg": True}, 0.001, 100)
-        self.pas.check_within_range(mnemonic2, -math.inf, math.inf)
+        self.pas.check_within_range(mnemonic2, -1e6, 1e6)
 
     
     def test_global_depths(self):
@@ -236,8 +219,38 @@ class TestOAN(unittest.TestCase):
         self.pas.check_not_assert_raised()
 
     
+    def test_ukin(self):
+        mnemonics = {"UKIN1.MM2/S": {"optional": False, "allow_zero": False, "allow_neg": False}} | {
+                "UKIN%s.MM2/S" % (i): {"optional": True, "allow_zero": False, "allow_neg": False} for i in range(2, 7)}
+        
+        for mnemonic, config in mnemonics.items():
+            self.pas.check_null(mnemonic, config)
+            self.pas.check_zero(mnemonic, config)
+            self.pas.check_negative(mnemonic, config, 1, 100)
+            self.pas.check_within_range(mnemonic, 0.001, 1e6)
 
+    def test_uab(self):
+        mnemonics = {
+            "UAB1.MPA'S": {"optional": False, "allow_zero": False, "allow_neg": False} } | {
+                "UAB%s.MPA'S" % (i): {"optional": True, "allow_zero": False, "allow_neg": False} for i in range(2, 7)}
 
+        for mnemonic, config in mnemonics.items():
+            self.pas.check_null(mnemonic, config)
+            self.pas.check_zero(mnemonic, config)
+            self.pas.check_negative(mnemonic, config, 1, 100)
+            self.pas.check_out_of_range(mnemonic, 150, 1500)
+            self.pas.check_within_range(mnemonic, 0.001, 150)
+
+    def test_ut_degC(self):
+        mnemonics = {"UT1.DEGC": {"optional": False, "allow_zero": False, "allow_neg": False}} | {
+                "UT%s.DEGC" % (i): {"optional": True, "allow_zero": False, "allow_neg": False} for i in range(2, 7)}
+
+        for mnemonic, config in mnemonics.items():
+            self.pas.check_null(mnemonic, config)
+            self.pas.check_zero(mnemonic, config)
+            self.pas.check_negative(mnemonic, config, 0.001, 100, 100, 500)
+            self.pas.check_out_of_range(mnemonic, 1000, 1500)
+            self.pas.check_within_range(mnemonic, 0.001, 1000)
 
 if __name__ == "__main__":
     unittest.main()
