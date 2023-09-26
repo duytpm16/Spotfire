@@ -60,9 +60,7 @@ def check_units_range(mnemonic, value, ranges):
 
 
 def check_required_two(mnemonics, data):
-    value1 = data[mnemonics[0]]
-    value2 = data[mnemonics[1]]
-    if value1 is None and value2 is None:
+    if data[mnemonics[0]] is None and data[mnemonics[1]] is None:
         sys.exit("ERROR: %s and %s must not both be null." % mnemonics)
 
 
@@ -298,20 +296,14 @@ class PAS:
                 else:
                     self.check_value(mnemonic, value, size, rule)
 
-            elif field == "~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS":
-                if self.data["FS-SPNT."] is None:
+            elif field in {"~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS",
+                           "~ SECOND STAGE SEPARATOR - GAS ANALYSIS"}:
+                if self.data["FS-SPNT."] is None or self.data["SEPCOND."] != "B":
                     check_required_null(mnemonic, value)
                 else:
-                    if self.data["SEPCOND."] == "B":
-                        self.check_value(mnemonic, value, size, rule)
-                    else:
-                        if value is not None:
-                            self.check_value(mnemonic, value, size, rule)
-
-            elif field == "~ SECOND STAGE SEPARATOR - GAS ANALYSIS":
-                if self.data["SEPCOND."] == "B" and self.data["STYP."] == "R":
-                    check_required(mnemonic, value)
-                self.check_value(mnemonic, value, size, rule)
+                    if field == "~ SECOND STAGE SEPARATOR - GAS ANALYSIS":
+                        check_required(mnemonic, value)
+                    self.check_value(mnemonic, value, size, rule)
 
             elif field in {
                 "~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS",

@@ -67,6 +67,31 @@ class TestGAN(unittest.TestCase):
         self.pas.check_within_range(mnemonic, 0.001, 150000)
 
 
+    def numb_null_only_test_sequence(self, mnemonic):
+        self.pas.check_out_of_range(mnemonic, -1e6, 0)
+        self.pas.check_out_of_range(mnemonic, 0.001, 1e6)
+        self.pas.check_zero(mnemonic, {"allow_zero": False})
+        self.pas.check_null(mnemonic, {"optional": True})
+
+    
+    def numb_code_null_only_test_sequence(self, mnemonic):
+        self.pas.pas.data[mnemonic] = random.randint(0, 100)
+        self.pas.check_assert_raised()
+        self.pas.check_null(mnemonic, {"optional": True})
+
+
+    def char_null_only_test_sequence(self, mnemonic):
+        self.pas.check_out_of_range(mnemonic, -1e6, 0)
+        self.pas.check_out_of_range(mnemonic, 0, 1e6)
+        self.pas.check_null(mnemonic, {"optional": True})
+
+
+    def char_code_null_only_test_sequence(self, mnemonic):
+        self.pas.pas.data[mnemonic] = random.choice(string.ascii_uppercase)
+        self.pas.check_assert_raised()
+        self.pas.check_null(mnemonic, {"optional": True})
+
+
     def test_a(self):
         self.pas.subset_pas("GAN")
 
@@ -250,243 +275,231 @@ class TestGAN(unittest.TestCase):
         self.pas.check_within_range(mnemonic, -1e6, 1e6)    
  
         del self.pas.pas.data[mnemonic]
+        del self.pas.pas.data[dependent1]
         del self.pas.pas.data[dependent2]
 
 
     def test_h2smt(self):
-        mnemonic   = "H2SMT."
-        dependent  = "H2SLC."
+        mnemonic  = "H2SMT."
+        dependent = "H2SLC."
 
-        self.pas.pas.data[dependent] = 'L'
-        self.pas.pas.data[mnemonic]  = random.choice(self.pas.pas.codes[mnemonic])
-        self.pas.check_assert_raised()
-        self.pas.check_char_code_out_of_range(mnemonic)
-        self.pas.check_null(mnemonic, {"optional": True})
 
+        # H2SLC != 'L', so mnemonic is mandatory. Hence optional=False 
+        # Mnemonic must folow its rule in PAS format file.
         self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != 'L'])
+
         self.char_code_test_sequence(mnemonic, {"optional": False})
 
+
+        # H2SLC = 'L', so mnemonic is optional. Hence optional=True 
+        # Mnemonic must folow its rule in PAS format file.
+        self.pas.pas.data[dependent] = 'L'
+        
+        self.char_code_null_only_test_sequence(mnemonic)
+
+
         del self.pas.pas.data[mnemonic]
+        del self.pas.pas.data[dependent]
 
 
     def test_labh2s(self):
-        mnemonic   = "LABH2S.FRAC"
+        mnemonic, config = "LABH2S.FRAC", {"optional": True, "allow_zero": True, "allow_neg": True}
         dependent1 = "H2SLC."
  
-
+        # H2SLC = 'F' so mnemonic is optional, hence optional=True.
+        # Other dictionary item is based on PAS format file.
         self.pas.pas.data[dependent1] = 'F'
-        config = {"optional": True, "allow_zero": True, "allow_neg": True}
+
         self.numb_test_sequence(mnemonic, config)    
 
+
+        # H2SLC != 'F' so mnemonic mandatory, hence optional=True.
+        # Other dictionary item is based on PAS format file.
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'F'])
-        config = {"optional": False, "allow_zero": True, "allow_neg": True}
+
+        config["optional"] = False
         self.numb_test_sequence(mnemonic, config)
 
+
         del self.pas.pas.data[mnemonic]
+        del self.pas.pas.data[dependent1]
   
     
     def test_header_fss_gas_analysis(self):
-        mnemonics = ["FS-SPNT.", 
-                     "FS-SPNTN.",
-                     "FS-RPRES.KPAA",
-                     "FS-RTEMP.DEGC"]
+        mnemonics = ["FS-SPNT.", "FS-SPNTN.", "FS-RPRES.KPAA", "FS-RTEMP.DEGC"]
+        char_mnemonics = {"FS-SPNTN.": {"optional": False}}
+        numb_code_mnemonics = {"FS-SPNT.": {"optional": False}}
+        kpa_mnemonics = {"FS-RPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
+        degC_mnemonics = {"FS-RTEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         dependent = "STYP."
 
+
+        # STYP is not 'C', so mnemonics must follow its rule in PAS format file.
+        # Dictionary is based on rule in PAS format file.
         self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != 'C'])
 
-        char_mnemonics = {"FS-SPNTN.": {"optional": False}}
         for mnemonic, config in char_mnemonics.items():
             self.char_test_sequence(mnemonic, config)
 
-        numb_code_mnemonics = {"FS-SPNT.": {"optional": False}}
         for mnemonic, config in numb_code_mnemonics.items():
             self.numb_code_test_sequence(mnemonic, config)        
      
-        kpa_mnemonics = {"FS-RPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
             self.unit_kPa_test_sequence(mnemonic, config)
 
-        degC_mnemonics = {"FS-RTEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
             self.unit_degC_test_sequence(mnemonic, config)
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+
+        # STYP is 'C', so mnemonics must be null.
+        # Dictionary is based on rule in PAS format file.
         self.pas.pas.data[dependent] = 'C'
 
         for mnemonic, config in char_mnemonics.items():
-            self.pas.pas.data[mnemonic] = ''.join(random.choices(string.ascii_letters, k = random.randint(1, 1000)))
-            self.pas.check_assert_raised()
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.char_null_only_test_sequence(mnemonic)
 
         for mnemonic, config in numb_code_mnemonics.items():
-            self.pas.pas.data[mnemonic] = random.randint(0, 100)
-            self.pas.check_assert_raised()
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_code_null_only_test_sequence(mnemonic)
         
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_null_only_test_sequence(mnemonic)
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_null_only_test_sequence(mnemonic)
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+        
+        del self.pas.pas.data[dependent]
+
 
     def test_header_fss_gas_analysis_spres_stemp(self):
-        mnemonics = ["FS-SPRES.KPAA",
-                     "FS-STEMP.DEGC"]
+        mnemonics = ["FS-SPRES.KPAA", "FS-STEMP.DEGC"]
+        kpa_mnemonics  = {"FS-SPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
+        degC_mnemonics = {"FS-STEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         dependent1 = "STYP."
         dependent2 = "FS-SDAT.DAY"
 
+
+        # STYP != 'C' and Date is > 2004 09 30.
+        # Mnemonics must follow its rule in PAS format file.
+        # Dictionary is based on rule in PAS format file.
         date = "%04d %02d %02d" % (random.randint(2004, 9999), random.randint(10, 12), random.randint(1, 28))
 
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'C'])
         self.pas.pas.data[dependent2] = date
  
-        kpa_mnemonics = {"FS-SPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
             self.unit_kPa_test_sequence(mnemonic, config)
 
-        degC_mnemonics = {"FS-STEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
             self.unit_degC_test_sequence(mnemonic, config)
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+
+        # STYP != 'C' and Date is <= 2004 09 30.
+        # Mnemonics are optional, hence optional=True.
+        # Other dictionary item is based on rule in PAS format file.
         date = "%04d %02d %02d" % (random.randint(0, 2004), random.randint(1, 9), random.randint(1, 28))
 
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'C'])
         self.pas.pas.data[dependent2] = date
  
-        kpa_mnemonics = {"FS-SPRES.KPAA": {"optional": True, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in kpa_mnemonics.items():
+            config["optional"] = True
             self.unit_kPa_test_sequence(mnemonic, config)
 
-        degC_mnemonics = {"FS-STEMP.DEGC": {"optional": True, "allow_zero": True, "allow_neg": True}}
         for mnemonic, config in degC_mnemonics.items():
+            config["optional"] = True
             self.unit_degC_test_sequence(mnemonic, config)
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+
+        # STYP = 'C', so date does not matter here.
+        # All mnemonics must be null.
         self.pas.pas.data[dependent1] = 'C'
         self.pas.pas.data[dependent2] = None
 
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_null_only_test_sequence(mnemonic)   
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_null_only_test_sequence(mnemonic)   
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
+
+
+        del self.pas.pas.data[dependent1] 
         del self.pas.pas.data[dependent2]
 
 
     def test_dt_fss_gas_analysis(self):
         self.pas.field = "~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS"
-        mnemonics = ["COMPCOM.", 
-                     "MOLG.FRAC",
-                     "MOLAGF.FRAC",
-                     "LIQVOL.ML/M3"]
+        mnemonics = ["COMPCOM.", "MOLG.FRAC", "MOLAGF.FRAC", "LIQVOL.ML/M3"]
+        char_mnemonics = {"COMPCOM.": {"optional": False}}
+        numb_mnemonics = {"MOLG.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
+                          "MOLAGF.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
+                          "LIQVOL.ML/M3": {"optional": False, "allow_zero": False, "allow_neg": True}}        
         dependent = "STYP."
 
+
+        # STYP is not C, so mnemonics must follow its rule. 
+        # Dictionary is based on rule in PAS format file.
         self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != 'C'])
 
-        char_mnemonics = {"COMPCOM.": {"optional": False}}
         for mnemonic, config in char_mnemonics.items():
             self.char_test_sequence(mnemonic, config)    
 
-        numb_mnemonics = {"MOLG.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
-                          "MOLAGF.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
-                          "LIQVOL.ML/M3": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in numb_mnemonics.items():
             self.numb_test_sequence(mnemonic, config)
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+
+        # STYP is C, so mnemonics must be null.
+        # Dictionary is based on rule in PAS format file.
         self.pas.pas.data[dependent] = 'C'
 
         for mnemonic, config in char_mnemonics.items():
-            self.pas.pas.data[mnemonic] = ''.join(random.choices(string.ascii_letters, k = random.randint(1, 1000)))
-            self.pas.check_assert_raised()
-            self.pas.check_null(mnemonic, {"optional": True})       
+            self.char_null_only_test_sequence(mnemonic)       
 
         for mnemonic, config in numb_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})         
+            self.numb_null_only_test_sequence(mnemonic)          
 
         for mnemonics in mnemonics:
             del self.pas.pas.data[mnemonics]
-        self.pas.field = None     
+
+
+        del self.pas.pas.data[dependent]
+        self.pas.field = None  
 
 
     def test_header_sss_gas_analysis(self):
-        mnemonics = ["SS-SPNT.", 
-                     "SS-SPNTN.",
-                     "SS-RPRES.KPAA",
-                     "SS-RTEMP.DEGC"]
-        dependent1 = "SEPCOND."
-        dependent2 = 'STYP.'
+        mnemonics = ["SS-SPNT.", "SS-SPNTN.", "SS-RPRES.KPAA", "SS-RTEMP.DEGC"]
+        char_mnemonics      = {"SS-SPNTN.": {"optional": False}}
+        numb_code_mnemonics = {"SS-SPNT.": {"optional": False}}
+        kpa_mnemonics       = {"SS-RPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
+        degC_mnemonics      = {"SS-RTEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
+
+        dependent1 = 'STYP.'
+        dependent2 = "SEPCOND."
         dependent3 = "FS-SPNT."
 
-        self.pas.pas.data[dependent1] = 'B'
-        self.pas.pas.data[dependent2] = 'R'
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
-        char_mnemonics = {"SS-SPNTN.": {"optional": False}}
-        for mnemonic, config in char_mnemonics.items():
-            self.char_test_sequence(mnemonic, config)
-
-        numb_code_mnemonics = {"SS-SPNT.": {"optional": False}}
-        for mnemonic, config in numb_code_mnemonics.items():
-            self.numb_code_test_sequence(mnemonic, config)        
-     
-        kpa_mnemonics = {"SS-RPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
-        for mnemonic, config in kpa_mnemonics.items():
-            self.unit_kPa_test_sequence(mnemonic, config)
-
-        degC_mnemonics = {"SS-RTEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
-        for mnemonic, config in degC_mnemonics.items():
-            self.unit_degC_test_sequence(mnemonic, config)
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-
-        self.pas.pas.data[dependent1] = 'F'
-        self.pas.pas.data[dependent2] = 'R'
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
-
-        for mnemonic, config in char_mnemonics.items():
-            config['optional'] = True
-            self.char_test_sequence(mnemonic, config)
-
-        for mnemonic, config in numb_code_mnemonics.items():
-            config['optional'] = True
-            self.numb_code_test_sequence(mnemonic, config)        
-     
-        for mnemonic, config in kpa_mnemonics.items():
-            config['optional'] = True
-            self.unit_kPa_test_sequence(mnemonic, config)
-
-        for mnemonic, config in degC_mnemonics.items():
-            config['optional'] = True
-            self.unit_degC_test_sequence(mnemonic, config)
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-
-        self.pas.pas.data[dependent1] = None
-        self.pas.pas.data[dependent2] = random.choice([x for x in self.pas.pas.codes[dependent2] if x != 'R' and x != 'C'])
+        # STYP = 'R' and SEPCOND = 'B'. FS-SPNT must not be null (First Stage Sample exists).
+        # All 'mnemonics' should follow its rule. Dictionary are based on PAS rules.
+        self.pas.pas.data[dependent1] = 'R'
+        self.pas.pas.data[dependent2] = 'B'
         self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, config in char_mnemonics.items():
@@ -504,145 +517,250 @@ class TestGAN(unittest.TestCase):
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
-        self.pas.pas.data[dependent1] = None
-        self.pas.pas.data[dependent2] = 'C'
-        self.pas.pas.data[dependent3] = None
+
+        # STYP = 'R' and SEPCOND = 'F'. FS-SPNT must not be null (First Stage Sample exists).
+        # All 'mnemonics' should follow its rule. Dictionary are based on PAS rules.
+        self.pas.pas.data[dependent1] = 'R'
+        self.pas.pas.data[dependent2] = 'F'
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+
         for mnemonic, config in char_mnemonics.items():
-            self.pas.pas.data[mnemonic] = ''.join(random.choices(string.ascii_letters, k = random.randint(1, 1000)))
-            self.pas.check_assert_raised()
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.char_null_only_test_sequence(mnemonic)
 
         for mnemonic, config in numb_code_mnemonics.items():
-            self.pas.pas.data[mnemonic] = random.randint(0, 100)
-            self.pas.check_assert_raised()
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_code_null_only_test_sequence(mnemonic)
         
         for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_null_only_test_sequence(mnemonic)
 
         for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_null_only_test_sequence(mnemonic)
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
+
+
+        # STYP is not 'R' or 'C', so SEPCOND must be null. FS-SPNT must not be null (First Stage Sample exists).
+        # All 'mnemonics' should be null.
+        self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'R' and x != 'C'])
+        self.pas.pas.data[dependent2] = None
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+
+        for mnemonic, config in char_mnemonics.items():
+            self.char_null_only_test_sequence(mnemonic)
+
+        for mnemonic, config in numb_code_mnemonics.items():
+            self.numb_code_null_only_test_sequence(mnemonic)
+        
+        for mnemonic, config in kpa_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic, config in degC_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        # STYP is 'C', so SEPCOND must be null. FS-SPNT must be null (First Stage Sample exists).
+        # All 'mnemonics' should be null.
+        self.pas.pas.data[dependent1] = 'C'
+        self.pas.pas.data[dependent2] = None
+        self.pas.pas.data[dependent3] = None
+
+        for mnemonic, config in char_mnemonics.items():
+            self.char_null_only_test_sequence(mnemonic)
+
+        for mnemonic, config in numb_code_mnemonics.items():
+            self.numb_code_null_only_test_sequence(mnemonic)
+        
+        for mnemonic, config in kpa_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic, config in degC_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
         del self.pas.pas.data[dependent1]
+        del self.pas.pas.data[dependent2]
         del self.pas.pas.data[dependent3]
 
-
     def test_header_sss_gas_analysis_spres_stemp(self):
-        mnemonics = ["SS-SPRES.KPAA", 
-                     "SS-STEMP.DEGC"]
-        dependent1 = "SEPCOND."
-        dependent2 = 'STYP.'
+        mnemonics = ["SS-SPRES.KPAA", "SS-STEMP.DEGC"]
+        kpa_mnemonics  = {"SS-SPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
+        degC_mnemonics = {"SS-STEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
+
+        dependent1 = 'STYP.'
+        dependent2 = "SEPCOND."
         dependent3 = "FS-SPNT."
         dependent4 = "SS-SDAT.DAY"
 
-        date = "%04d %02d %02d" % (random.randint(2004, 9999), random.randint(10, 12), random.randint(1, 28))
 
-        self.pas.pas.data[dependent1] = 'B'
-        self.pas.pas.data[dependent2] = 'R'
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])  
-        self.pas.pas.data[dependent4] = date   
-     
-        kpa_mnemonics = {"SS-SPRES.KPAA": {"optional": False, "allow_zero": False, "allow_neg": True}}
-        for mnemonic, config in kpa_mnemonics.items():
-            self.unit_kPa_test_sequence(mnemonic, config)
-
-        degC_mnemonics = {"SS-STEMP.DEGC": {"optional": False, "allow_zero": True, "allow_neg": True}}
-        for mnemonic, config in degC_mnemonics.items():
-            self.unit_degC_test_sequence(mnemonic, config)
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-
-        date = "%04d %02d %02d" % (random.randint(0, 2004), random.randint(1, 9), random.randint(1, 28))
-
-        self.pas.pas.data[dependent1] = 'B'
-        self.pas.pas.data[dependent2] = 'R'
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])  
-        self.pas.pas.data[dependent4] = date   
-     
-        for mnemonic, config in kpa_mnemonics.items():
-            config['optional'] = True
-            self.unit_kPa_test_sequence(mnemonic, config)
-
-        for mnemonic, config in degC_mnemonics.items():
-            config['optional'] = True
-            self.unit_degC_test_sequence(mnemonic, config)
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-
-        self.pas.pas.data[dependent1] = 'F'
-        self.pas.pas.data[dependent2] = 'R'
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
-
-        for mnemonic, config in kpa_mnemonics.items():
-            self.unit_kPa_test_sequence(mnemonic, config)
-
-        for mnemonic, config in degC_mnemonics.items():
-            self.unit_degC_test_sequence(mnemonic, config)
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-
-        self.pas.pas.data[dependent1] = None
-        self.pas.pas.data[dependent2] = random.choice([x for x in self.pas.pas.codes[dependent2] if x != 'R' and x != 'C'])
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])    
-     
-        for mnemonic, config in kpa_mnemonics.items():
-            self.unit_kPa_test_sequence(mnemonic, config)
-
-        for mnemonic, config in degC_mnemonics.items():
-            self.unit_degC_test_sequence(mnemonic, config)
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-        del self.pas.pas.data[dependent4]
-
-        self.pas.pas.data[dependent1] = None
-        self.pas.pas.data[dependent2] = 'C'
-        self.pas.pas.data[dependent3] = None
-
-        for mnemonic, config in kpa_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
-
-        for mnemonic, config in degC_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-        del self.pas.pas.data[dependent1]
-        del self.pas.pas.data[dependent3]
-
-
-    def test_sss_gas_analysis(self):
-        mnemonics = {"SS-%s.FRAC" % (gas): {"optional": True, "allow_zero": False, "allow_neg": True} 
-                     for gas in ["H2S", "CO2", "N2", "H2", "HE", "C1", "C2", "C3", "IC4", "NC4", "IC5", "NC5", "C6", "C7+"]}
-        dependent1 = "STYP."
-        dependent2 = "SEPCOND."
-
-        self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'R'])
-        self.pas.pas.data[dependent2] = None
-        for mnemonic, config in mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
-
+        # STYP = 'R' and SEPCOND = 'B'. FS-SPNT must not be null (First Stage Sample exists).
+        # Date is > 2004 09 30.
+        # All 'mnemonics' are mandatory and should follow its rule, hence optional=False.
+        date = "%04d %02d %02d" % (random.randint(2004, 9999),  random.randint(10, 12), random.randint(1, 28))
         self.pas.pas.data[dependent1] = 'R'
-        self.pas.pas.data[dependent2] = 'F'
-        for mnemonic, config in mnemonics.items():
-            self.numb_test_sequence(mnemonic, config)
+        self.pas.pas.data[dependent2] = 'B'
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+        self.pas.pas.data[dependent4] = date
+
+        for mnemonic, config in kpa_mnemonics.items():
+            self.unit_kPa_test_sequence(mnemonic, config)
+
+        for mnemonic, config in degC_mnemonics.items():
+            self.unit_degC_test_sequence(mnemonic, config)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        # STYP = 'R' and SEPCOND = 'B'. FS-SPNT must not be null (First Stage Sample exists).
+        # Date is <= 2004 09 30.
+        # All 'mnemonics' are optional, hence optional=True.
+        date = "%04d %02d %02d" % (random.randint(0, 2004), random.randint(3, 9), random.randint(1, 30))
 
         self.pas.pas.data[dependent1] = 'R'
         self.pas.pas.data[dependent2] = 'B'
-        for mnemonic, config in mnemonics.items():
-            config["optional"] = False
-            self.numb_test_sequence(mnemonic, config)
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+        self.pas.pas.data[dependent4] = date
+
+        for mnemonic, config in kpa_mnemonics.items():
+            config["optional"] = True
+            self.unit_kPa_test_sequence(mnemonic, config)
+
+        for mnemonic, config in degC_mnemonics.items():
+            config["optional"] = True
+            self.unit_degC_test_sequence(mnemonic, config)
+
+        for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
+
+
+        # STYP = 'R' and SEPCOND = 'F'. FS-SPNT must not be null (First Stage Sample exists).
+        # Date does not matter since SEPCOND != 'B'. Set to None.
+        # All 'mnemonics' must be null.
+        self.pas.pas.data[dependent1] = 'R'
+        self.pas.pas.data[dependent2] = 'F'
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+        self.pas.pas.data[dependent4] = None
+
+        for mnemonic, config in kpa_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+        
+        for mnemonic, config in degC_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        # STYP is not 'R' or 'C', so SEPCOND must be null. FS-SPNT must not be null (First Stage Sample exists).
+        # Date does not matter since SEPCOND != 'B'. Set to None.
+        # All 'mnemonics' must be null.
+        self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'R' and x != 'C'])
+        self.pas.pas.data[dependent2] = None
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])    
+        self.pas.pas.data[dependent4] = None
+
+        for mnemonic, config in kpa_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic, config in degC_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        # STYP is 'C', so SEPCOND must be null. FS-SPNT must be null (First Stage Sample does not exists).
+        # Date does not matter since SEPCOND != 'B'. Set to None.
+        # All 'mnemonics' must be null.
+        self.pas.pas.data[dependent1] = 'C'
+        self.pas.pas.data[dependent2] = None
+        self.pas.pas.data[dependent3] = None
+        self.pas.pas.data[dependent4] = None
+
+        for mnemonic, config in kpa_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic, config in degC_mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        del self.pas.pas.data[dependent1]
         del self.pas.pas.data[dependent2]
+        del self.pas.pas.data[dependent3]
+        del self.pas.pas.data[dependent4]
+
+    def test_sss_gas_analysis(self):
+        mnemonics = {"SS-%s.FRAC" % (gas): {"optional": False, "allow_zero": False, "allow_neg": True} for gas in ["H2S", "CO2", "N2", "H2", "HE", "C1", "C2", "C3", "IC4", "NC4", "IC5", "NC5", "C6", "C7+"]}
+        dependent1 = "STYP."
+        dependent2 = "SEPCOND."
+        dependent3 = "FS-SPNT."
+
+
+        # STYP = 'R' and SEPCOND = 'B'. FS-SPNT must not be null (First Stage Sample exists). 
+        # All 'mnemonics' are mandatory and should follow its rule, hence optional=False.
+        self.pas.pas.data[dependent1] = 'R'
+        self.pas.pas.data[dependent2] = 'B'
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+
+        for mnemonic, config in mnemonics.items():
+            self.numb_test_sequence(mnemonic, config)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        # STYP = 'R' and SEPCOND = 'F'. FS-SPNT must not be null (First Stage Sample exists). 
+        # All 'mnemonics' must be null.
+        self.pas.pas.data[dependent1] = 'R'
+        self.pas.pas.data[dependent2] = 'F'
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+
+        for mnemonic, _ in mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        # STYP is not R or C, so SEPCOND must be Null. FS-SPNT must not be null (First Stage Sample exists). 
+        # All 'mnemonics' must be null.        
+        self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'R' and x != 'C'])
+        self.pas.pas.data[dependent2] = None
+        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
+
+        for mnemonic, config in mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        # STYP is C, so SEPCOND must be Null. FS-SPNT must be null (First Stage Sample does not exists). 
+        # All 'mnemonics' must be null.    
+        self.pas.pas.data[dependent1] = 'C'
+        self.pas.pas.data[dependent2] = None
+        self.pas.pas.data[dependent3] = None
+
+        for mnemonic, config in mnemonics.items():
+            self.numb_null_only_test_sequence(mnemonic)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
+
+
+        del self.pas.pas.data[dependent1]
+        del self.pas.pas.data[dependent2]
+        del self.pas.pas.data[dependent3]
 
 
     def test_header_cl_analysis(self):
@@ -918,66 +1036,72 @@ class TestGAN(unittest.TestCase):
 
     def test_rca_data_properties(self):
         self.pas.field = "~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES"
-        mnemonics = ["SEPCOND.",
-                     "LIQRAT.M3/D",
-                     "LIQGPT.",
-                     "LIQMM.",
-                     "LIQRDN."]
+        mnemonics = ["SEPCOND.", "LIQRAT.M3/D", "LIQGPT.", "LIQMM.", "LIQRDN."]
+        char_code_mnemonics = {"SEPCOND.": {"optional": False}, "LIQGPT.": {"optional": False}}
+        numb_mnemonics = {"LIQRAT.M3/D": {"optional": False, "allow_zero": False, "allow_neg": True},
+                          "LIQMM.": {"optional": False, "allow_zero": False, "allow_neg": True},
+                          "LIQRDN.": {"optional": False, "allow_zero": False, "allow_neg": True}}        
         dependent = 'STYP.'
 
+
+        # STYP = 'R', then mnemonics must be mandatory.
+        # Dictionary items are based on PAS format file.
         self.pas.pas.data[dependent] = 'R'
 
-        char_code_mnemonics = {"SEPCOND.": {"optional": False},
-                               "LIQGPT.": {"optional": False}}
         for mnemonic, config in char_code_mnemonics.items():
             self.char_code_test_sequence(mnemonic, config)  
 
-        numb_mnemonics = {"LIQRAT.M3/D": {"optional": False, "allow_zero": False, "allow_neg": True},
-                          "LIQMM.": {"optional": False, "allow_zero": False, "allow_neg": True},
-                          "LIQRDN.": {"optional": False, "allow_zero": False, "allow_neg": True}}
         for mnemonic, config in numb_mnemonics.items():
             self.numb_test_sequence(mnemonic, config)       
         
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+
+        # STYP != 'R', then mnemonics must be null.
+        # Dictionary items are based on PAS format file.
         self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != 'R'])
 
         for mnemonic, config in char_code_mnemonics.items():
-            self.pas.pas.data[mnemonic] = random.choice(self.pas.pas.codes[mnemonic])
-            self.pas.check_assert_raised()
-            self.pas.check_char_code_out_of_range(mnemonic)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.char_code_null_only_test_sequence(mnemonic)
 
         for mnemonic, config in numb_mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+            self.numb_null_only_test_sequence(mnemonic)
         
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+
+        del self.pas.pas.data[dependent]
         self.pas.field = None
 
 
     def test_fs_gas_e3m3(self):
-        mnemonics = {"FS-GAS.E3M3/D": {"optional": True, "allow_zero": False, "allow_neg": True}}
+        mnemonic, config = "FS-GAS.E3M3/D", {"optional": True, "allow_zero": False, "allow_neg": True}
         dependent1 = 'STYP.'
         dependent2 = 'SEPCOND.'
 
+
+        # STYP = 'R', so SEPCOND must not be null. SEPCOND can be either 'F' or 'B'.
+        # Mnemonic must not be null, hence optional=False.
+        # Dictionary is based on PAS format file.
         self.pas.pas.data[dependent1] = 'R'
         self.pas.pas.data[dependent2] = random.choice(self.pas.pas.codes[dependent2])
-        for mnemonic, config in mnemonics.items():
-            config["optional"] = False
-            self.numb_test_sequence(mnemonic, config)       
+        config["optional"] = False
+        self.numb_test_sequence(mnemonic, config)       
         
+
+        # STYP != 'R', so SEPCOND must be null.
+        # Mnemonic must be null, hence optional=False.
+        # Dictionary is based on PAS format file.
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != 'R'])
         self.pas.pas.data[dependent2] = None
-        for mnemonic, config in mnemonics.items():
-            self.pas.check_out_of_range(mnemonic, -1e6, 1e6)
-            self.pas.check_null(mnemonic, {"optional": True})
+
+        self.numb_null_only_test_sequence(mnemonic)
         
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
+
+        del self.pas.pas.data[mnemonic]
+        del self.pas.pas.data[dependent1]        
         del self.pas.pas.data[dependent2]
 
 
