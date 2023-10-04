@@ -68,11 +68,14 @@ def check_depths(depths, data):
     check_less_than(depths[0], depths[1], data[depths[0]], data[depths[1]])
 
 
-def check_dstloc(mnemonic, value, spnt_value):
-    if spnt_value is None or spnt_value != "50":
-        check_required_null(mnemonic, value)
-    else:
-        check_required(mnemonic, value)
+def check_dstloc(SPNT, data):
+    DSTLOC = "DSTLOC."
+
+    if DSTLOC in data:
+        if data[SPNT] is None or int(data[SPNT]) != 50:
+            check_required_null(DSTLOC, data[DSTLOC])
+        else:
+            check_required(DSTLOC, data[DSTLOC])
 
 
 def is_date_greater(day, min_day):
@@ -103,7 +106,7 @@ class PAS:
             "M": (-math.inf, 7000.00),
             "TROOM.DEGC": (0.0, 45.0),
             "RELMM.": (80.0, 250.0),
-            "RDLIQ.": (-math.inf, 1.0),
+            "RDLIQ.": (-math.inf, 1.0)
         }
         self.codes = {
             "AIN.": ["Y", "N"],
@@ -156,12 +159,12 @@ class PAS:
             "TULD.": ["Y", "N"],
             "UNIT.": ["M"],
             "WSFL.": [1, 2, 6, 17],
-            "WTYP.": ["V", "D", "H"],
+            "WTYP.": ["V", "D", "H"]
         }
         self.depths = ("TTOPL.M", "TBASL.M")
         self.pairs = {
             "TSUL.FRAC": ("TSUL.FRAC", "TSUL.GM/KG"),
-            "TSUL.GM/KG": ("TSUL.FRAC", "TSUL.GM/KG"),
+            "TSUL.GM/KG": ("TSUL.FRAC", "TSUL.GM/KG")
         }
         self.min_day = datetime.strptime("2004 09 30", "%Y %m %d").date()
         self.date_dependent = {
@@ -170,7 +173,7 @@ class PAS:
             "SS-SPRES.KPAA": "SS-SDAT.DAY",
             "SS-STEMP.DEGC": "SS-SDAT.DAY",
             "CL-SPRES.KPAA": "CL-SDAT.DAY",
-            "CL-STEMP.DEGC": "CL-SDAT.DAY",
+            "CL-STEMP.DEGC": "CL-SDAT.DAY"
         }
         self.test_negative = ["> 0", ">= 0", "> = 0", "> zero"]
         self.test_null = [
@@ -179,7 +182,7 @@ class PAS:
             "then",
             "can be blank",
             "can be null",
-            "can be zero or null",
+            "can be zero or null"
         ]
         self.test_zero = [
             "> = 0",
@@ -189,7 +192,7 @@ class PAS:
             "can  be zero",
             "can be null or zero",
             "can be blank or zero",
-            "can be null, negative or zero",
+            "can be null, negative or zero"
         ]
 
     def subset(self, pastype):
@@ -209,7 +212,7 @@ class PAS:
                 self.pt["BUSINESS RULES AND EDITS"],
             )
         else:
-            sys.exit("ERROR: Cannot find PAS type [%s] does not exists." % pastype)
+            sys.exit("ERROR: Cannot find PAS type [%s]." % pastype)
 
     def format_data(self, data_table):
         self.data = {
@@ -233,6 +236,7 @@ class PAS:
         }
 
     def check_value(self, mnemonic, value, size, rule):
+        # Null Check
         if mnemonic in self.pairs:
             check_required_two(self.pairs[mnemonic], self.data)
 
@@ -243,16 +247,20 @@ class PAS:
         if rule is None or all([r not in rule for r in self.test_null]):
             check_required(mnemonic, value)
 
+        # Value check
         if value is not None and not pd.isnull(value):
+            # DAY check
             if self.field_day in size:
                 check_valid_day_format(mnemonic, value.split(self.delim))
 
+            # CHAR check
             elif self.field_char in size:
                 check_char_size(mnemonic, value, int(size.split(self.delim)[1]))
 
                 if mnemonic in self.codes:
                     check_code(mnemonic, value, self.codes[mnemonic])
 
+            # NUMB Check
             else:
                 value = float(value)
                 units = mnemonic.split(".")
@@ -277,13 +285,14 @@ class PAS:
                     check_units_range(mnemonic, value, self.units_range[mnemonic])
 
     def check_oan_wan_data(self):
-        for mnemonic, _, size, rule in self.pt_zip:
-            if mnemonic == "DSTLOC.":
-                check_dstloc(mnemonic, self.data[mnemonic], self.data["SPNT."])
+        check_dstloc("SPNT.", self.data)
 
+        for mnemonic, _, size, rule in self.pt_zip:
             self.check_value(mnemonic, self.data[mnemonic], size, rule)
 
     def check_gan_data(self):
+        check_dstloc("FS-SPNT.", self.data)
+
         for mnemonic, field, size, rule in self.pt_zip:
             value = self.data[mnemonic]
 
@@ -347,10 +356,7 @@ class PAS:
                 self.check_value(mnemonic, value, size, rule)
 
             else:
-                if mnemonic == "DSTLOC.":
-                    check_dstloc(mnemonic, value, self.data["FS-SPNT."])
-
-                elif mnemonic == "GLR.M3/M3":
+                if mnemonic == "GLR.M3/M3":
                     if self.data["STYP."] == "R":
                         check_required(mnemonic, value)
 
