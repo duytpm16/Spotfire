@@ -68,6 +68,10 @@ def check_depths(depths, data):
     check_less_than(depths[0], depths[1], data[depths[0]], data[depths[1]])
 
 
+def is_date_greater(day, min_day):
+    return datetime.strptime(day, "%Y %m %d").date() > min_day
+
+
 def check_dstloc(SPNT, data):
     DSTLOC = "DSTLOC."
 
@@ -76,10 +80,6 @@ def check_dstloc(SPNT, data):
             check_required_null(DSTLOC, data[DSTLOC])
         else:
             check_required(DSTLOC, data[DSTLOC])
-
-
-def is_date_greater(day, min_day):
-    return datetime.strptime(day, "%Y %m %d").date() > min_day
 
 
 class PAS:
