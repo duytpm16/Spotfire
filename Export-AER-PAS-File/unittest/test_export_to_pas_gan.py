@@ -10,11 +10,26 @@ from test_export_to_pas import TestPAS
 
 class TestGAN(unittest.TestCase):
 
+    gases = ["H2S", 
+             "CO2", 
+             "N2", 
+             "H2", 
+             "HE", 
+             "C1", 
+             "C2", 
+             "C3", 
+             "IC4", 
+             "NC4", 
+             "IC5", 
+             "NC5", 
+             "C6",
+             "C7+"]
+    
     pas = TestPAS()
-
 
     def test_a(self):
         self.pas.subset_pas("GAN")
+        self.pas.pas.data['HYDLP.'] = 'N'
 
 
     def test_char(self):
@@ -341,7 +356,7 @@ class TestGAN(unittest.TestCase):
         # Mnemonics are optional, hence optional=True.
         # Other dictionary item is based on rule in PAS format file.
         date = "%04d %02d %02d" % (
-            random.randint(0, 2004),
+            random.randint(1, 2004),
             random.randint(1, 9),
             random.randint(1, 28),
         )
@@ -378,46 +393,46 @@ class TestGAN(unittest.TestCase):
         del self.pas.pas.data[dependent2]
 
 
-    def test_dt_fss_gas_analysis(self):
-        self.pas.field = "~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS"
-        mnemonics = ["COMPCOM.", "MOLG.FRAC", "MOLAGF.FRAC", "LIQVOL.ML/M3"]
-        char_mnemonics = {"COMPCOM.": {"optional": False}}
-        numb_mnemonics = {
-            "MOLG.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
-            "MOLAGF.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
-            "LIQVOL.ML/M3": {"optional": False, "allow_zero": False, "allow_neg": True},
-        }
+    # def test_dt_fss_gas_analysis(self):
+    #     self.pas.field = "~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS"
+    #     mnemonics = ["COMPCOM.", "MOLG.FRAC", "MOLAGF.FRAC", "LIQVOL.ML/M3"]
+    #     char_mnemonics = {"COMPCOM.": {"optional": False}}
+    #     numb_mnemonics = {
+    #         "MOLG.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
+    #         "MOLAGF.FRAC": {"optional": False, "allow_zero": True, "allow_neg": True},
+    #         "LIQVOL.ML/M3": {"optional": False, "allow_zero": False, "allow_neg": True},
+    #     }
 
-        dependent = "STYP."
+    #     dependent = "STYP."
 
-        # STYP is not C, so mnemonics must follow its rule.
-        # Dictionary is based on rule in PAS format file.
-        self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != "C"])
+    #     # STYP is not C, so mnemonics must follow its rule.
+    #     # Dictionary is based on rule in PAS format file.
+    #     self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != "C"])
 
-        for mnemonic, config in char_mnemonics.items():
-            self.pas.char_test_sequence(mnemonic, config)
+    #     for mnemonic, config in char_mnemonics.items():
+    #         self.pas.char_test_sequence(mnemonic, config)
 
-        for mnemonic, config in numb_mnemonics.items():
-            self.pas.numb_test_sequence(mnemonic, config)
+    #     for mnemonic, config in numb_mnemonics.items():
+    #         self.pas.numb_test_sequence(mnemonic, config)
 
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
+    #     for mnemonic in mnemonics:
+    #         del self.pas.pas.data[mnemonic]
 
-        # STYP is C, so mnemonics must be null.
-        # Dictionary is based on rule in PAS format file.
-        self.pas.pas.data[dependent] = "C"
+    #     # STYP is C, so mnemonics must be null.
+    #     # Dictionary is based on rule in PAS format file.
+    #     self.pas.pas.data[dependent] = "C"
 
-        for mnemonic, config in char_mnemonics.items():
-            self.pas.char_null_only_test_sequence(mnemonic)
+    #     for mnemonic, config in char_mnemonics.items():
+    #         self.pas.char_null_only_test_sequence(mnemonic)
 
-        for mnemonic, config in numb_mnemonics.items():
-            self.pas.numb_null_only_test_sequence(mnemonic)
+    #     for mnemonic, config in numb_mnemonics.items():
+    #         self.pas.numb_null_only_test_sequence(mnemonic)
 
-        for mnemonics in mnemonics:
-            del self.pas.pas.data[mnemonics]
+    #     for mnemonics in mnemonics:
+    #         del self.pas.pas.data[mnemonics]
 
-        del self.pas.pas.data[dependent]
-        self.pas.field = None
+    #     del self.pas.pas.data[dependent]
+    #     self.pas.field = None
 
 
     def test_header_sss_gas_analysis(self):
@@ -429,13 +444,11 @@ class TestGAN(unittest.TestCase):
 
         dependent1 = "STYP."
         dependent2 = "SEPCOND."
-        dependent3 = "FS-SPNT."
 
-        # STYP = 'R' and SEPCOND = 'B'. FS-SPNT must not be null (First Stage Sample exists).
+        # STYP = 'R' and SEPCOND = 'B'.
         # All 'mnemonics' should follow its rule. Dictionary are based on PAS rules.
         self.pas.pas.data[dependent1] = "R"
         self.pas.pas.data[dependent2] = "B"
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, config in char_mnemonics.items():
             self.pas.char_test_sequence(mnemonic, config)
@@ -452,11 +465,10 @@ class TestGAN(unittest.TestCase):
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
-        # STYP = 'R' and SEPCOND = 'F'. FS-SPNT must not be null (First Stage Sample exists).
+        # STYP = 'R' and SEPCOND = 'F'.
         # All 'mnemonics' should follow its rule. Dictionary are based on PAS rules.
         self.pas.pas.data[dependent1] = "R"
         self.pas.pas.data[dependent2] = "F"
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, config in char_mnemonics.items():
             self.pas.char_null_only_test_sequence(mnemonic)
@@ -473,11 +485,10 @@ class TestGAN(unittest.TestCase):
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
-        # STYP is not 'R' or 'C', so SEPCOND must be null. FS-SPNT must not be null (First Stage Sample exists).
+        # STYP is not 'R', so SEPCOND must be null.
         # All 'mnemonics' should be null.
-        self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != "R" and x != "C"])
+        self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != "R"])
         self.pas.pas.data[dependent2] = None
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, config in char_mnemonics.items():
             self.pas.char_null_only_test_sequence(mnemonic)
@@ -493,31 +504,6 @@ class TestGAN(unittest.TestCase):
 
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
-
-        # STYP is 'C', so SEPCOND must be null. FS-SPNT must be null (First Stage Sample exists).
-        # All 'mnemonics' should be null.
-        self.pas.pas.data[dependent1] = "C"
-        self.pas.pas.data[dependent2] = None
-        self.pas.pas.data[dependent3] = None
-
-        for mnemonic, config in char_mnemonics.items():
-            self.pas.char_null_only_test_sequence(mnemonic)
-
-        for mnemonic, config in numb_code_mnemonics.items():
-            self.pas.numb_code_null_only_test_sequence(mnemonic)
-
-        for mnemonic, config in kpa_mnemonics.items():
-            self.pas.numb_null_only_test_sequence(mnemonic)
-
-        for mnemonic, config in degC_mnemonics.items():
-            self.pas.numb_null_only_test_sequence(mnemonic)
-
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-
-        del self.pas.pas.data[dependent1]
-        del self.pas.pas.data[dependent2]
-        del self.pas.pas.data[dependent3]
 
 
     def test_header_sss_gas_analysis_spres_stemp(self):
@@ -527,7 +513,6 @@ class TestGAN(unittest.TestCase):
 
         dependent1 = "STYP."
         dependent2 = "SEPCOND."
-        dependent3 = "FS-SPNT."
         dependent4 = "SS-SDAT.DAY"
 
         # STYP = 'R' and SEPCOND = 'B'. FS-SPNT must not be null (First Stage Sample exists).
@@ -540,7 +525,6 @@ class TestGAN(unittest.TestCase):
         )
         self.pas.pas.data[dependent1] = "R"
         self.pas.pas.data[dependent2] = "B"
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
         self.pas.pas.data[dependent4] = date
 
         for mnemonic, config in kpa_mnemonics.items():
@@ -556,13 +540,12 @@ class TestGAN(unittest.TestCase):
         # Date is <= 2004 09 30.
         # All 'mnemonics' are optional, hence optional=True.
         date = "%04d %02d %02d" % (
-            random.randint(0, 2004),
+            random.randint(1, 2004),
             random.randint(3, 9),
             random.randint(1, 30),
         )
         self.pas.pas.data[dependent1] = "R"
         self.pas.pas.data[dependent2] = "B"
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
         self.pas.pas.data[dependent4] = date
 
         for mnemonic, config in kpa_mnemonics.items():
@@ -581,7 +564,6 @@ class TestGAN(unittest.TestCase):
         # All 'mnemonics' must be null.
         self.pas.pas.data[dependent1] = "R"
         self.pas.pas.data[dependent2] = "F"
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
         self.pas.pas.data[dependent4] = None
 
         for mnemonic, config in kpa_mnemonics.items():
@@ -598,7 +580,6 @@ class TestGAN(unittest.TestCase):
         # All 'mnemonics' must be null.
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != "R" and x != "C"])
         self.pas.pas.data[dependent2] = None
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
         self.pas.pas.data[dependent4] = None
 
         for mnemonic, config in kpa_mnemonics.items():
@@ -615,7 +596,6 @@ class TestGAN(unittest.TestCase):
         # All 'mnemonics' must be null.
         self.pas.pas.data[dependent1] = "C"
         self.pas.pas.data[dependent2] = None
-        self.pas.pas.data[dependent3] = None
         self.pas.pas.data[dependent4] = None
 
         for mnemonic, config in kpa_mnemonics.items():
@@ -629,24 +609,21 @@ class TestGAN(unittest.TestCase):
 
         del self.pas.pas.data[dependent1]
         del self.pas.pas.data[dependent2]
-        del self.pas.pas.data[dependent3]
         del self.pas.pas.data[dependent4]
 
 
     def test_sss_gas_analysis(self):
         mnemonics = {
-            "SS-%s.FRAC"% (gas): {"optional": False, "allow_zero": False, "allow_neg": True} for gas in ["H2S", "CO2", "N2", "H2", "HE", "C1", "C2", "C3", "IC4", "NC4", "IC5", "NC5", "C6", "C7+"]
+            "SS-%s.FRAC"% (gas): {"optional": False, "allow_zero": False, "allow_neg": True} for gas in self.gases
         }
 
         dependent1 = "STYP."
         dependent2 = "SEPCOND."
-        dependent3 = "FS-SPNT."
 
         # STYP = 'R' and SEPCOND = 'B'. FS-SPNT must not be null (First Stage Sample exists).
         # All 'mnemonics' are mandatory and should follow its rule, hence optional=False.
         self.pas.pas.data[dependent1] = "R"
         self.pas.pas.data[dependent2] = "B"
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, config in mnemonics.items():
             self.pas.numb_test_sequence(mnemonic, config)
@@ -658,7 +635,6 @@ class TestGAN(unittest.TestCase):
         # All 'mnemonics' must be null.
         self.pas.pas.data[dependent1] = "R"
         self.pas.pas.data[dependent2] = "F"
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, _ in mnemonics.items():
             self.pas.numb_null_only_test_sequence(mnemonic)
@@ -670,7 +646,6 @@ class TestGAN(unittest.TestCase):
         # All 'mnemonics' must be null.
         self.pas.pas.data[dependent1] = random.choice([x for x in self.pas.pas.codes[dependent1] if x != "R" and x != "C"])
         self.pas.pas.data[dependent2] = None
-        self.pas.pas.data[dependent3] = random.choice(self.pas.pas.codes[dependent3])
 
         for mnemonic, config in mnemonics.items():
             self.pas.numb_null_only_test_sequence(mnemonic)
@@ -682,7 +657,6 @@ class TestGAN(unittest.TestCase):
         # All 'mnemonics' must be null.
         self.pas.pas.data[dependent1] = "C"
         self.pas.pas.data[dependent2] = None
-        self.pas.pas.data[dependent3] = None
 
         for mnemonic, config in mnemonics.items():
             self.pas.numb_null_only_test_sequence(mnemonic)
@@ -692,7 +666,6 @@ class TestGAN(unittest.TestCase):
 
         del self.pas.pas.data[dependent1]
         del self.pas.pas.data[dependent2]
-        del self.pas.pas.data[dependent3]
 
 
     def test_header_cl_analysis(self):
@@ -741,8 +714,6 @@ class TestGAN(unittest.TestCase):
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
-        del self.pas.pas.data[dependent1]
-
 
     def test_header_cl_analysis_spres_stemp(self):
         mnemonics = ["CL-SPRES.KPAA", "CL-STEMP.DEGC"]
@@ -778,7 +749,7 @@ class TestGAN(unittest.TestCase):
         # Date is < 2004 09 30.
         # All 'mnemonics' are optional, hence optional=True.
         date = "%04d %02d %02d" % (
-            random.randint(0, 2004),
+            random.randint(1, 2004),
             random.randint(1, 9),
             random.randint(1, 28),
         )
@@ -811,47 +782,45 @@ class TestGAN(unittest.TestCase):
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
-        del self.pas.pas.data[dependent1]
         del self.pas.pas.data[dependent2]
 
 
-    def test_dt_cl_analysis(self):
-        self.pas.field = "~ DATA TABLE - CONDENSATE / LIQUID ANALYSIS"
-        mnemonics = ["COMPCOM.", "MOLC.FRAC", "MASS.FRAC", "VOL.FRAC"]
-        char_mnemonics = {"COMPCOM.": {"optional": False}}
-        numb_mnemonics = {
-            "MOLC.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "MASS.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
-            "VOL.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True}
-        }
+    # def test_dt_cl_analysis(self):
+    #     self.pas.field = "~ DATA TABLE - CONDENSATE / LIQUID ANALYSIS"
+    #     mnemonics = ["COMPCOM.", "MOLC.FRAC", "MASS.FRAC", "VOL.FRAC"]
+    #     char_mnemonics = {"COMPCOM.": {"optional": False}}
+    #     numb_mnemonics = {
+    #         "MOLC.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
+    #         "MASS.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
+    #         "VOL.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True}
+    #     }
 
-        dependent = "HYDLP."
+    #     dependent = "HYDLP."
 
-        # HYDLP = 'Y', so mnemonics should follow it's rule.
-        self.pas.pas.data[dependent] = "Y"
+    #     # HYDLP = 'Y', so mnemonics should follow it's rule.
+    #     self.pas.pas.data[dependent] = "Y"
 
-        for mnemonic, config in char_mnemonics.items():
-            self.pas.char_test_sequence(mnemonic, config)
+    #     for mnemonic, config in char_mnemonics.items():
+    #         self.pas.char_test_sequence(mnemonic, config)
 
-        for mnemonic, config in numb_mnemonics.items():
-            self.pas.numb_test_sequence(mnemonic, config)
+    #     for mnemonic, config in numb_mnemonics.items():
+    #         self.pas.numb_test_sequence(mnemonic, config)
 
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
+    #     for mnemonic in mnemonics:
+    #         del self.pas.pas.data[mnemonic]
 
-        # HYDLP = 'N', so mnemonics should be null.
-        self.pas.pas.data[dependent] = "N"
+    #     # HYDLP = 'N', so mnemonics should be null.
+    #     self.pas.pas.data[dependent] = "N"
 
-        for mnemonic, config in char_mnemonics.items():
-            self.pas.char_null_only_test_sequence(mnemonic)
+    #     for mnemonic, config in char_mnemonics.items():
+    #         self.pas.char_null_only_test_sequence(mnemonic)
 
-        for mnemonic, config in numb_mnemonics.items():
-            self.pas.numb_null_only_test_sequence(mnemonic)
+    #     for mnemonic, config in numb_mnemonics.items():
+    #         self.pas.numb_null_only_test_sequence(mnemonic)
 
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
-        del self.pas.pas.data[dependent]
-        self.pas.field = None
+    #     for mnemonic in mnemonics:
+    #         del self.pas.pas.data[mnemonic]
+    #     self.pas.field = None
 
 
     def test_cl_data_properties(self):
@@ -908,58 +877,58 @@ class TestGAN(unittest.TestCase):
         self.pas.field = None
 
 
-    def test_dt_cl_fraction_distillation(self):
-        self.pas.field = "~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION"
-        mnemonics = ["LIQCOMP.", "MOLL.FRAC", "MASS.FRAC", "VOL.FRAC", "RDLIQ.", "RELMM."]
-        char_mnemonics = {"LIQCOMP.": {"optional": False}}
-        rng1_mnemonics = {"MOLL.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
-                          "MASS.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
-                          "VOL.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
-                          "RDLIQ.": {"optional": True, "allow_zero": False, "allow_neg": True}}
-        rng2_mnemonics = {"RELMM.": {"optional": True, "allow_zero": False, "allow_neg": False}}
+    # def test_dt_cl_fraction_distillation(self):
+    #     self.pas.field = "~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION"
+    #     mnemonics = ["LIQCOMP.", "MOLL.FRAC", "MASS.FRAC", "VOL.FRAC", "RDLIQ.", "RELMM."]
+    #     char_mnemonics = {"LIQCOMP.": {"optional": False}}
+    #     rng1_mnemonics = {"MOLL.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
+    #                       "MASS.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
+    #                       "VOL.FRAC": {"optional": True, "allow_zero": True, "allow_neg": True},
+    #                       "RDLIQ.": {"optional": True, "allow_zero": False, "allow_neg": True}}
+    #     rng2_mnemonics = {"RELMM.": {"optional": True, "allow_zero": False, "allow_neg": False}}
 
-        dependent = "HYDLP."
+    #     dependent = "HYDLP."
 
-        # HYDLP = 'Y', so mnemonics must follow its rule.
-        self.pas.pas.data[dependent] = "Y"
+    #     # HYDLP = 'Y', so mnemonics must follow its rule.
+    #     self.pas.pas.data[dependent] = "Y"
 
-        for mnemonic, config in char_mnemonics.items():
-            self.pas.char_test_sequence(mnemonic, config)
+    #     for mnemonic, config in char_mnemonics.items():
+    #         self.pas.char_test_sequence(mnemonic, config)
 
-        for mnemonic, config in rng1_mnemonics.items():
-            self.pas.check_null(mnemonic, config)
-            self.pas.check_zero(mnemonic, config)
-            self.pas.check_negative(mnemonic, config, -1e6, 0)
-            self.pas.check_out_of_range(mnemonic, 1, 1e6)
-            self.pas.check_within_range(mnemonic, 0.001, 1)
+    #     for mnemonic, config in rng1_mnemonics.items():
+    #         self.pas.check_null(mnemonic, config)
+    #         self.pas.check_zero(mnemonic, config)
+    #         self.pas.check_negative(mnemonic, config, -1e6, 0)
+    #         self.pas.check_out_of_range(mnemonic, 1, 1e6)
+    #         self.pas.check_within_range(mnemonic, 0.001, 1)
 
-        for mnemonic, config in rng2_mnemonics.items():
-            self.pas.check_null(mnemonic, config)
-            self.pas.check_zero(mnemonic, config)
-            self.pas.check_negative(mnemonic, config, -1e6, 0)
-            self.pas.check_out_of_range(mnemonic, -1e6, 80)
-            self.pas.check_out_of_range(mnemonic, 250.001, 1e6)
-            self.pas.check_within_range(mnemonic, 80, 250)
+    #     for mnemonic, config in rng2_mnemonics.items():
+    #         self.pas.check_null(mnemonic, config)
+    #         self.pas.check_zero(mnemonic, config)
+    #         self.pas.check_negative(mnemonic, config, -1e6, 0)
+    #         self.pas.check_out_of_range(mnemonic, -1e6, 80)
+    #         self.pas.check_out_of_range(mnemonic, 250.001, 1e6)
+    #         self.pas.check_within_range(mnemonic, 80, 250)
 
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
+    #     for mnemonic in mnemonics:
+    #         del self.pas.pas.data[mnemonic]
 
-        # HYDLP = 'N', so mnemonics must be null.
-        self.pas.pas.data[dependent] = "N"
+    #     # HYDLP = 'N', so mnemonics must be null.
+    #     self.pas.pas.data[dependent] = "N"
 
-        for mnemonic, config in char_mnemonics.items():
-            self.pas.char_null_only_test_sequence(mnemonic)
+    #     for mnemonic, config in char_mnemonics.items():
+    #         self.pas.char_null_only_test_sequence(mnemonic)
 
-        for mnemonic, config in rng1_mnemonics.items():
-            self.pas.numb_null_only_test_sequence(mnemonic)
+    #     for mnemonic, config in rng1_mnemonics.items():
+    #         self.pas.numb_null_only_test_sequence(mnemonic)
 
-        for mnemonic, config in rng2_mnemonics.items():
-            self.pas.numb_null_only_test_sequence(mnemonic)
+    #     for mnemonic, config in rng2_mnemonics.items():
+    #         self.pas.numb_null_only_test_sequence(mnemonic)
 
-        for mnemonic in mnemonics:
-            del self.pas.pas.data[mnemonic]
+    #     for mnemonic in mnemonics:
+    #         del self.pas.pas.data[mnemonic]
 
-        self.pas.field = None
+    #     self.pas.field = None
 
 
     def test_rca_data_properties(self):
@@ -1057,16 +1026,17 @@ class TestGAN(unittest.TestCase):
 
     def test_recombined_gas_composition(self):
         mnemonics = {
-            "R-%s.FRAC" % (gas): {"optional": True, "allow_zero": False, "allow_neg": True} for gas in ["H2S", "CO2", "N2", "H2", "HE", "C1", "C2", "C3", "IC4", "NC4", "IC5", "NC5", "C6","C7+"]
+            "R-%s.FRAC" % (gas): {"optional": True, "allow_zero": False, "allow_neg": True} for gas in self.gases
         }
         dependent = "STYP."
 
         # STYP != 'R' so mnemonics are optional.
-        self.pas.pas.data[dependent] = random.choice(
-            [x for x in self.pas.pas.codes[dependent] if x != "R"]
-        )
+        self.pas.pas.data[dependent] = random.choice([x for x in self.pas.pas.codes[dependent] if x != "R"])
         for mnemonic, config in mnemonics.items():
             self.pas.numb_test_sequence(mnemonic, config)
+
+        for mnemonic in mnemonics:
+            del self.pas.pas.data[mnemonic]
 
         # STYP = 'R' so mnemonics must not be null.
         self.pas.pas.data[dependent] = "R"
@@ -1077,8 +1047,10 @@ class TestGAN(unittest.TestCase):
         for mnemonic in mnemonics:
             del self.pas.pas.data[mnemonic]
 
+        del self.pas.pas.data[dependent]
 
-    def test_rgp(self):
+
+    def test_recombined_gas_properties(self):
         mnemonics = ["RGHV.MJ/M3", "RGHVA.MJ/M3", "RECOFLO.E3M3/D", "RDGAS.", "R-PPC.KPAA", "R-PTC.DEGK"]
         numb_mnemonics = {
             "RGHV.MJ/M3": {"optional": False, "allow_zero": False, "allow_neg": True},

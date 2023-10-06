@@ -41,8 +41,7 @@ def check_num_range(mnemonic, value, rmin, rmax):
 
 def check_code(mnemonic, value, codes):
     if value not in codes:
-        msg = ", ".join([c if isinstance(c, str) else str(c) for c in codes])
-        sys.exit("ERROR: %s must be any of: %s." % (mnemonic, msg))
+        sys.exit("ERROR: %s must be a valid code." % (mnemonic))
 
 
 def check_num_equal(mnemonic, value, expected):
@@ -86,17 +85,17 @@ class PAS:
     def __init__(self, pas_spec):
         self.version = 4.0
 
-        self.pt = pas_spec
+        self.delim = " "
         self.data = {}
+        self.pt = pas_spec
         self.pas_format = []
         self.pas_type = ""
         self.pastype_column = "PASTYPE."
         self.field_char = "CHAR"
         self.field_numb = "NUMB"
         self.field_day = "YYYY MM DD"
-        self.field_hr = "YYYY MM DD HHHH"
+        self.field_day_hr = "YYYY MM DD HHHH"
         self.field_day_hr_sec = "YYYY MM DD HHHH:SS"
-        self.delim = " "
         self.units_range = {
             "DEGC": (-100.00, 1000.00),
             "DEGK": (173.15, 1273.15),
@@ -104,9 +103,11 @@ class PAS:
             "KPAA": (-math.inf, 150000.00),
             "MPA'S": (-math.inf, 150.00),
             "M": (-math.inf, 7000.00),
+        }
+        self.mnemonic_range = {
             "TROOM.DEGC": (0.0, 45.0),
             "RELMM.": (80.0, 250.0),
-            "RDLIQ.": (-math.inf, 1.0)
+            "RDLIQ.": (-math.inf, 1.0),
         }
         self.codes = {
             "AIN.": ["Y", "N"],
@@ -159,12 +160,12 @@ class PAS:
             "TULD.": ["Y", "N"],
             "UNIT.": ["M"],
             "WSFL.": [1, 2, 6, 17],
-            "WTYP.": ["V", "D", "H"]
+            "WTYP.": ["V", "D", "H"],
         }
         self.depths = ("TTOPL.M", "TBASL.M")
         self.pairs = {
             "TSUL.FRAC": ("TSUL.FRAC", "TSUL.GM/KG"),
-            "TSUL.GM/KG": ("TSUL.FRAC", "TSUL.GM/KG")
+            "TSUL.GM/KG": ("TSUL.FRAC", "TSUL.GM/KG"),
         }
         self.min_day = datetime.strptime("2004 09 30", "%Y %m %d").date()
         self.date_dependent = {
@@ -173,7 +174,7 @@ class PAS:
             "SS-SPRES.KPAA": "SS-SDAT.DAY",
             "SS-STEMP.DEGC": "SS-SDAT.DAY",
             "CL-SPRES.KPAA": "CL-SDAT.DAY",
-            "CL-STEMP.DEGC": "CL-SDAT.DAY"
+            "CL-STEMP.DEGC": "CL-SDAT.DAY",
         }
         self.test_negative = ["> 0", ">= 0", "> = 0", "> zero"]
         self.test_null = [
@@ -182,17 +183,16 @@ class PAS:
             "then",
             "can be blank",
             "can be null",
-            "can be zero or null"
+            "can be zero or null",
         ]
         self.test_zero = [
             "> = 0",
             ">= 0",
             "can = zero",
             "can be zero",
-            "can  be zero",
             "can be null or zero",
             "can be blank or zero",
-            "can be null, negative or zero"
+            "can be null, negative or zero",
         ]
 
     def subset(self, pastype):
@@ -260,11 +260,10 @@ class PAS:
                 if mnemonic in self.codes:
                     check_code(mnemonic, value, self.codes[mnemonic])
 
-            # NUMB Check
+            # NUMB check
             else:
                 value = float(value)
-                units = mnemonic.split(".")
-                units = units[1] if len(units) == 2 else None
+                units = mnemonic.split(".")[1]
 
                 if rule is None or all([r not in rule for r in self.test_zero]):
                     check_zero(mnemonic, value)
@@ -281,59 +280,43 @@ class PAS:
                     if mnemonic in self.depths:
                         check_depths(self.depths, self.data)
 
-                if mnemonic in self.units_range:
-                    check_units_range(mnemonic, value, self.units_range[mnemonic])
+                if mnemonic in self.mnemonic_range:
+                    check_units_range(mnemonic, value, self.mnemonic_range[mnemonic])
 
-    def check_oan_wan_data(self):
-        check_dstloc("SPNT.", self.data)
-
-        for mnemonic, _, size, rule in self.pt_zip:
-            self.check_value(mnemonic, self.data[mnemonic], size, rule)
-
-    def check_gan_data(self):
-        check_dstloc("FS-SPNT.", self.data)
+    def check_data(self, SPNT):
+        check_dstloc(SPNT, self.data)
 
         for mnemonic, field, size, rule in self.pt_zip:
             value = self.data[mnemonic]
 
-            if field in {
-                "~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS",
-                "~ DATA TABLE - FIRST STAGE SEPARATOR GAS ANALYSIS",
-            }:
+            if field in {"~ HEADER DATA - FIRST STAGE SEPARATOR GAS ANALYSIS"}:
                 if self.data["STYP."] == "C":
                     check_required_null(mnemonic, value)
-                else:
-                    self.check_value(mnemonic, value, size, rule)
+                    continue
 
-            elif field in {"~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS",
-                           "~ SECOND STAGE SEPARATOR - GAS ANALYSIS"}:
-                if self.data["FS-SPNT."] is None or self.data["SEPCOND."] != "B":
+            elif field in {
+                "~ HEADER DATA - SECOND STAGE SEPARATOR - GAS ANALYSIS",
+                "~ SECOND STAGE SEPARATOR - GAS ANALYSIS"
+            }:
+                if self.data["SEPCOND."] != "B":
                     check_required_null(mnemonic, value)
+                    continue
                 else:
-                    if field == "~ SECOND STAGE SEPARATOR - GAS ANALYSIS":
+                    if mnemonic not in self.date_dependent:
                         check_required(mnemonic, value)
-                    self.check_value(mnemonic, value, size, rule)
 
             elif field in {
                 "~ HEADER DATA - CONDENSATE / LIQUID ANALYSIS",
-                "~ DATA TABLE - CONDENSATE / LIQUID ANALYSIS",
-                "~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES",
-                "~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION",
+                "~ CONDENSATE / LIQUID ANALYSIS - DATA PROPERTIES"
             }:
                 if self.data["HYDLP."] == "N":
                     check_required_null(mnemonic, value)
+                    continue
                 else:
-                    if field == "~ DATA TABLE - CONDENSATE / LIQUID FRACTION DISTILLATION":
-                        if mnemonic in {"MOLL.FRAC", "MASS.FRAC", "VOL.FRAC", "RDLIQ."}:
-                            if value is not None:
-                                check_num_range(mnemonic, float(value), -math.inf, 1)
-                    else:
-                        if mnemonic == "H2SLP.":
-                            check_required(mnemonic, value)
-                        elif mnemonic == "LIQRDN.":
-                            check_required(mnemonic, value)
+                    if mnemonic in {"H2SLP.", "LIQRDN."}:
+                        check_required(mnemonic, value)
+                        if "NUMB" in size:
                             check_num_range(mnemonic, float(value), -math.inf, 1)
-                    self.check_value(mnemonic, value, size, rule)
 
             elif field in {
                 "~ RECOMBINED GAS ANALYSIS - DATA PROPERTIES",
@@ -342,48 +325,36 @@ class PAS:
                 if self.data["STYP."] != "R":
                     check_required_null(mnemonic, value)
                 else:
-                    if mnemonic == "SS-GAS.E3M3/D" and self.data["SEPCOND."] != "B":
-                        self.check_value(mnemonic, value, size, rule)
-                    elif mnemonic in ["R-PPC.KPAA", "R-PTC.DEGK"]:
-                        self.check_value(mnemonic, value, size, rule)
-                    else:
+                    if (mnemonic == "SS-GAS.E3M3/D" and self.data["SEPCOND."] == "B") or mnemonic not in {"R-PPC.KPAA", "R-PTC.DEGK", "SS-GAS.E3M3/D"}:
                         check_required(mnemonic, value)
-                        self.check_value(mnemonic, value, size, rule)
 
-            elif field == "~ RECOMBINED GAS COMPOSITION":
+            elif mnemonic == "GLR.M3/M3" or field == "~ RECOMBINED GAS COMPOSITION":
                 if self.data["STYP."] == "R":
                     check_required(mnemonic, value)
-                self.check_value(mnemonic, value, size, rule)
 
             else:
-                if mnemonic == "GLR.M3/M3":
-                    if self.data["STYP."] == "R":
-                        check_required(mnemonic, value)
-
-                elif mnemonic in {"FLDH2S.PPM", "H2SMT."}:
+                if mnemonic in {"FLDH2S.PPM", "H2SMT."}:
                     if self.data["H2SLC."] == "L":
                         check_required_null(mnemonic, value)
                     else:
                         check_required(mnemonic, value)
-
-                        if self.data["H2SMT."] == "N" and mnemonic == "FLDH2S.PPM":
+                        if self.data["H2SMT."] == "N" and "NUMB" in size:
                             check_num_equal(mnemonic, float(value), 0)
+
+                elif mnemonic == "LABH2S.FRAC" and self.data["H2SLC."] != "F":
+                    check_required(mnemonic, value)
 
                 elif mnemonic == "HYDLP.":
                     check_required(mnemonic, value)
 
-                elif mnemonic == "LABH2S.FRAC":
-                    if self.data["H2SLC."] != "F":
-                        check_required(mnemonic, value)
-
-                self.check_value(mnemonic, value, size, rule)
+            self.check_value(mnemonic, value, size, rule)
 
     def check_pas_data(self):
         if self.pas_type in {"OAN", "WAN"}:
-            self.check_oan_wan_data()
+            self.check_data("SPNT.")
 
         elif self.pas_type == "GAN":
-            self.check_gan_data()
+            self.check_data("FS-SPNT.")
 
 
 if __name__ == "__main__":
