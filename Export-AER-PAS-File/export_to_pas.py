@@ -24,6 +24,11 @@ def check_required(mnemonic, value):
         sys.exit("ERROR: %s must not be null." % (mnemonic))
 
 
+def check_required_two(mnemonics, data):
+    if data[mnemonics[0]] is None and data[mnemonics[1]] is None:
+        sys.exit("ERROR: %s and %s must not both be null." % mnemonics)
+
+
 def check_zero(mnemonic, value):
     if value == 0:
         sys.exit("ERROR: %s must not be 0." % (mnemonic))
@@ -56,11 +61,6 @@ def check_less_than(m1, m2, value1, value2):
 
 def check_units_range(mnemonic, value, ranges):
     check_num_range(mnemonic, value, ranges[0], ranges[1])
-
-
-def check_required_two(mnemonics, data):
-    if data[mnemonics[0]] is None and data[mnemonics[1]] is None:
-        sys.exit("ERROR: %s and %s must not both be null." % mnemonics)
 
 
 def check_depths(depths, data):
@@ -283,8 +283,17 @@ class PAS:
                 if mnemonic in self.mnemonic_range:
                     check_units_range(mnemonic, value, self.mnemonic_range[mnemonic])
 
-    def check_data(self, SPNT):
+
+    def check_oan_wan_data(self, SPNT):
         check_dstloc(SPNT, self.data)
+
+        for mnemonic, _, size, rule in self.pt_zip:
+            self.check_value(mnemonic, self.data[mnemonic], size, rule)
+
+
+    def check_gan_data(self, SPNT):
+        check_dstloc(SPNT, self.data)
+        check_required("HYDLP.", self.data["HYDLP."])
 
         for mnemonic, field, size, rule in self.pt_zip:
             value = self.data[mnemonic]
@@ -315,7 +324,7 @@ class PAS:
                 else:
                     if mnemonic in {"H2SLP.", "LIQRDN."}:
                         check_required(mnemonic, value)
-                        if "NUMB" in size:
+                        if mnemonic == "LIQRDN.":
                             check_num_range(mnemonic, float(value), -math.inf, 1)
 
             elif field in {
@@ -328,12 +337,14 @@ class PAS:
                     if (mnemonic == "SS-GAS.E3M3/D" and self.data["SEPCOND."] == "B") or mnemonic not in {"R-PPC.KPAA", "R-PTC.DEGK", "SS-GAS.E3M3/D"}:
                         check_required(mnemonic, value)
 
-            elif mnemonic == "GLR.M3/M3" or field == "~ RECOMBINED GAS COMPOSITION":
-                if self.data["STYP."] == "R":
-                    check_required(mnemonic, value)
+            elif field == "~ RECOMBINED GAS COMPOSITION" and self.data["STYP."] == "R":
+                check_required(mnemonic, value)
 
             else:
-                if mnemonic in {"FLDH2S.PPM", "H2SMT."}:
+                if mnemonic == "GLR.M3/M3" and self.data["STYP."] == "R":
+                    check_required(mnemonic, value)
+                
+                elif mnemonic in {"FLDH2S.PPM", "H2SMT."}:
                     if self.data["H2SLC."] == "L":
                         check_required_null(mnemonic, value)
                     else:
@@ -344,17 +355,14 @@ class PAS:
                 elif mnemonic == "LABH2S.FRAC" and self.data["H2SLC."] != "F":
                     check_required(mnemonic, value)
 
-                elif mnemonic == "HYDLP.":
-                    check_required(mnemonic, value)
-
             self.check_value(mnemonic, value, size, rule)
 
     def check_pas_data(self):
         if self.pas_type in {"OAN", "WAN"}:
-            self.check_data("SPNT.")
+            self.check_oan_wan_data("SPNT.")
 
         elif self.pas_type == "GAN":
-            self.check_data("FS-SPNT.")
+            self.check_gan_data("FS-SPNT.")
 
 
 if __name__ == "__main__":
