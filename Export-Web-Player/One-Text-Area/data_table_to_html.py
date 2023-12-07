@@ -11,9 +11,10 @@ expression = "Concatenate(" + ",\",\",".join(expression) + ")"
 visDT.Columns.AddCalculatedColumn("Combined", expression)
 
 # Build the Export button and HTML table
+split_text = '<p style="display: none;">split_here</p>'
 ta = visTA.As[HtmlTextArea]()
-ta.HtmlContent = ta.HtmlContent.split('<p style="display: none;">split_here</p>')[0]
-ta.HtmlContent += '<p style="display: none;">split_here</p><p id="exportTable" style="white-space: pre-wrap; display: none;">'
+ta.HtmlContent = ta.HtmlContent.split(split_text)[0]
+ta.HtmlContent += '%s<p id="exportTable" style="white-space: pre-wrap; display: none;">' % (split_text)
 
 cursor = DataValueCursor.CreateFormatted(visDT.Columns["Combined"])
 combined = [cursor.CurrentValue for row in visDT.GetRows(cursor)]
